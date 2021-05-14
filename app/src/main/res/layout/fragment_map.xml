@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/pokemon_blue"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/mapFragment_Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/pokemonsolid"
+        android:padding="@dimen/padding"
+        android:text="Kanto Map"
+        android:textColor="@color/pokemon_yellow"
+        android:textSize="@dimen/pokemon_list_fragment_title_size"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/mapFragment_ImgLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="30dp"
+        android:background="@drawable/mapview"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mapFragment_Title">
+
+
+    </FrameLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

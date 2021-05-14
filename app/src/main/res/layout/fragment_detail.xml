@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pokemon_blue"
+    android:padding="16dp"
+    android:scrollbars="none">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner_rv"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <Button
+            android:id="@+id/detailFragment_save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mapview"
+            android:layout_centerInParent="true"
+            android:text="Save Pokemon"
+            android:textSize="@dimen/pokemon_title_text_size"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/detailFragment_Image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pokemon_image_height"
+            tools:src="@drawable/place_holder_img" />
+
+        <FrameLayout
+            android:layout_width="250dp"
+            android:id="@+id/mapview"
+            android:layout_below="@id/detailFragment_map_ll"
+            android:layout_centerInParent="true"
+            android:background="@drawable/mapview"
+            android:layout_height="250dp">
+
+
+            <ImageView
+                android:id="@+id/mapview_plot"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                tools:src="@drawable/place_holder_img" />
+
+        </FrameLayout>
+
+
+
+
+
+        <LinearLayout
+            android:id="@+id/stats_title_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/abilities_container"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="100">
+
+            <TextView
+                android:id="@+id/detailFragment_title_stats"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="90"
+                android:text="Statistics"
+                android:textSize="@dimen/pokemon_type_text_size"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/stats_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/stats_title_container"
+            android:orientation="vertical"
+            android:padding="10dp" />
+
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/detailFragment_title_name"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:weightSum="100">
+
+            <TextView
+                android:id="@+id/detailFragment_title_abilities"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/recipe_title"
+                android:layout_weight="90"
+                android:text="Abilities"
+                android:textSize="@dimen/pokemon_type_text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/detailFragment_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:gravity="center"
+                android:textSize="@dimen/pokemon_type_text_size"
+                tools:text="Type: Grass" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/detailFragment_map_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/stats_container"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/detailFragment_map_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last Know Location"
+                android:textSize="@dimen/pokemon_title_text_size"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/abilities_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/container"
+            android:orientation="vertical"
+            android:padding="10dp" />
+
+
+        <TextView
+            android:id="@+id/detailFragment_title_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/detailFragment_Image"
+            android:padding="7dp"
+            android:textColor="#000"
+            android:textSize="@dimen/pokemon_title_text_size"
+            tools:text="Pikachu" />
+
+
+    </RelativeLayout>
+
+
+</ScrollView>
