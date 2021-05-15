@@ -13,6 +13,7 @@ buildscript {
         hilt_version = "2.33-beta"
         glide_version = "4.12.0"
         work_version = "2.5.0"
+        androidx_espresso_idling_resource = "3.2.0"
 
     }
     repositories {
