@@ -7,6 +7,8 @@ import androidx.room.Query
 import com.dbtechprojects.pokemonApp.models.api_responses.PokemonDetailItem
 import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
 
+//DAO Class to provide methods to perform options on Room Database
+
 @Dao
 interface PokemonDao {
 

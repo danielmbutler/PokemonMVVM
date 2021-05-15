@@ -17,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(private val repository: DefaultRepository) : ViewModel() {
 
-    private val _pokemonDetails = SingleLiveEvent<Resource<PokemonDetailItem>>()// single live event to stop stale items being stored in Live Data
+    // single live event to stop stale items being stored in Live Data
+    private val _pokemonDetails = SingleLiveEvent<Resource<PokemonDetailItem>>()
     val pokemonDetails: LiveData<Resource<PokemonDetailItem>>
         get() = _pokemonDetails
 
@@ -26,7 +27,7 @@ class DetailViewModel @Inject constructor(private val repository: DefaultReposit
     val pokemonSaveIntent: LiveData<Boolean>
         get() = _pokemonSaveIntent
 
-    // value for map plotting
+    // value for map plotting, held in view model to ensure the same location is plotted after rotation
 
     val plotLeft = (0..600).random()
     val plotTop = (0..600).random()

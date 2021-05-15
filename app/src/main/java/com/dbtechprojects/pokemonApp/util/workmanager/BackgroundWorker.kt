@@ -66,7 +66,8 @@ class BackgroundWorker @AssistedInject constructor(
                                 type = newPokemon.types?.get(0)?.type?.name.toString(),
                                 // set positions for map
                                 positionLeft = (0..1500).random(),
-                                positionTop = (0..1500).random()
+                                positionTop = (0..1500).random(),
+                                apiId = newPokemon.id
                             )
                             repository.savePokemon(newPokemonObj)
 

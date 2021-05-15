@@ -4,8 +4,10 @@ import androidx.room.*
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
-import kotlinx.parcelize.Parcelize
 
+
+
+// Room DB table and data class for detail response
 
 // make Pokemon name unique to stop duplicate Items
 @Entity(
@@ -36,7 +38,7 @@ data class PokemonDetailItem(
     val types: List<PokemonType>?,
 
     @SerializedName("sprites")
-    @Embedded
+    @Embedded // custom values require embedded annotation to allow nested fields
     val sprites: Sprites
 )
 

@@ -11,6 +11,7 @@ import com.dbtechprojects.pokemonApp.models.api_responses.PokemonResult
 import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
 import com.dbtechprojects.pokemonApp.repository.DefaultRepository
 import com.dbtechprojects.pokemonApp.util.Resource
+import com.dbtechprojects.pokemonApp.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListViewModel @Inject constructor(private val repository: DefaultRepository) : ViewModel() {
-    private val _pokemonList = MutableLiveData<Resource<List<CustomPokemonListItem>>>()
+    private val _pokemonList = SingleLiveEvent<Resource<List<CustomPokemonListItem>>>()
     val pokemonList: LiveData<Resource<List<CustomPokemonListItem>>>
         get() = _pokemonList
 

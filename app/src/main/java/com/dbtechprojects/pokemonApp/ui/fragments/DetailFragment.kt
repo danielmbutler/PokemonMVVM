@@ -18,18 +18,13 @@ import com.dbtechprojects.pokemonApp.ui.activities.MainActivity
 import com.dbtechprojects.pokemonApp.ui.viewmodels.DetailViewModel
 import com.dbtechprojects.pokemonApp.util.ImageUtils
 import com.dbtechprojects.pokemonApp.util.Resource
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 private const val TAG = "DetailFragment"
 
 @AndroidEntryPoint
-class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
+class DetailFragment : Fragment(R.layout.fragment_detail) {
     lateinit var binding: FragmentDetailBinding
     val mainActivity: MainActivity by lazy {
         requireActivity() as MainActivity
@@ -51,7 +46,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
                 Log.d(TAG, pokemon.id.toString())
                 // setup name
                 binding.detailFragmentTitleName.text = pokemon.name.capitalize()
-                getPokemonDetails(pokemon.id)
+                // query api for pokemon details
+                getPokemonDetails(pokemon.apiId)
                 subscribeObservers()
             }
         }
@@ -129,6 +125,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
         })
     }
 
+    //Setup Pokemon card info
     private fun setupView(pokemon: PokemonDetailItem) {
         // load image
         pokemon.sprites.otherSprites.artwork.front_default?.let { image ->
@@ -177,7 +174,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
         }
 
         // setup stars
-        //if average of pokemon stats is less than 60 leave at one star if more than 60 but less than 80 2 stars,more than 80 3 stars
+        //if average of pokemon stats is less than 60 leave at one star if more than 60 but less than 80 then show 2 stars,more than 80 3 stars
         val pokemonAverage = pokemonstats.sum() / 6
 
         Log.d(TAG, "pokemon aveage is $pokemonAverage")
@@ -217,7 +214,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
 
         }
 
-        // setup last location plot
+        // setup last location plot on map
         mPokemon.Image?.let { ImageUtils.loadImage(requireContext(), binding.mapviewPlot, it) }
 
         // set up random position
@@ -234,15 +231,4 @@ class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
         viewModel.getPokemonDetails(id.toString())
     }
 
-    override fun onMapReady(mMap: GoogleMap) {
-
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(
-            MarkerOptions()
-                .position(sydney)
-                .title("Marker in Sydney")
-        )
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-    }
 }

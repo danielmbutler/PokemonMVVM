@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -20,7 +22,6 @@ import com.dbtechprojects.pokemonApp.ui.dialogs.FilterDialog
 import com.dbtechprojects.pokemonApp.ui.viewmodels.ListViewModel
 import com.dbtechprojects.pokemonApp.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.logging.Filter
 
 private const val TAG = "ListFragment"
 
@@ -32,7 +33,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
     }
     private val viewModel: ListViewModel by viewModels()
     private lateinit var pokemonListAdapter: PokemonListAdapter
-    private lateinit var pokemonList: ArrayList<CustomPokemonListItem>
+    private  var pokemonList = mutableListOf<CustomPokemonListItem>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentListBinding.bind(view)
@@ -68,7 +69,68 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
             transaction.add(dialog, "dialog")
             transaction.commit()
         }
+        binding.listFragmentSettingsImg.setOnClickListener {
 
+            // setup alert to disable or re-enable background tasks
+            setupAlert()
+
+
+        }
+
+    }
+
+    private fun setupAlert() {
+        val workerStatusPref = context?.getSharedPreferences("worker", AppCompatActivity.MODE_PRIVATE)
+
+        val workerStatus = workerStatusPref?.getString("worker", "")
+
+        if (workerStatus!! == "cancel") {
+            val builder = AlertDialog.Builder(requireContext(), R.style.MyDialogTheme) // using custom theme
+            builder.setMessage("Re-enable background searching?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { dialog, id ->
+
+                    // disable work manager tasks
+                    val pref = context?.getSharedPreferences("worker", AppCompatActivity.MODE_PRIVATE)
+                    val editor = pref?.edit()
+
+                    editor?.let {
+                        editor.putString("worker", "enabled")
+                        editor.commit()
+                    }
+                    Toast.makeText(requireContext(), "Background tasks enabled", Toast.LENGTH_SHORT).show()
+
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
+        } else {
+            val builder = AlertDialog.Builder(requireContext(), R.style.MyDialogTheme) // using custom theme
+            builder.setMessage("Disable background pokemon search tasks ?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { dialog, id ->
+
+                    // disable work manager tasks
+                    val pref = context?.getSharedPreferences("worker", AppCompatActivity.MODE_PRIVATE)
+                    val editor = pref?.edit()
+
+                    editor?.let {
+                        editor.putString("worker", "cancel")
+                        editor.commit()
+                    }
+                    Toast.makeText(requireContext(), "Background tasks cancelled", Toast.LENGTH_SHORT).show()
+
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    // Dismiss the dialog
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
+        }
     }
 
     private fun setupSearchView() {
@@ -138,6 +200,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
         viewModel.pokemonList.observe(viewLifecycleOwner, Observer { list ->
             when (list) {
                 is Resource.Success -> {
+                    Log.d(TAG, list.data.toString())
                     if (list.data != null) {
                         if (list.data.isNotEmpty()) {
                             Log.d(TAG, list.data.toString())
@@ -154,24 +217,30 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
                         } else {
                             // setup empty recyclerview
                             showProgressbar(false)
-                            val emptyItem = CustomPokemonListItem(name = "no items found", type = "none")
-                            pokemonList.add(emptyItem)
-                            pokemonListAdapter.setList(pokemonList)
-                            binding.listFragmentRv.invalidate()
-                            pokemonListAdapter.notifyDataSetChanged()
+                            showEmptyRecyclerView()
+
                         }
+                    } else {
+                        showEmptyRecyclerView()
                     }
 
                 }
                 is Resource.Error -> {
                     Log.d(TAG, list.message.toString())
                     showProgressbar(false)
+                    // setup empty recyclerview
+                    showEmptyRecyclerView()
+
                 }
                 is Resource.Loading -> {
                     showProgressbar(true)
                 }
             }
         })
+    }
+
+    private fun showEmptyRecyclerView(){
+      Toast.makeText(requireContext(), "no items found", Toast.LENGTH_SHORT).show()
     }
 
 

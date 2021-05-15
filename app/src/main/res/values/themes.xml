@@ -41,6 +41,15 @@
         <item name="android:statusBarColor">@color/pokemon_yellow</item>
     </style>
 
+    <!--- Dialog Theme -->
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/pokemon_card_color_dark</item>
+        <item name="android:buttonBarButtonStyle">@style/MyButtonsStyle</item>
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
+    <style name="MyButtonsStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+
+    </style>
 
     <string name="search_hint">Search for Pokemon by name..</string>
 </resources>

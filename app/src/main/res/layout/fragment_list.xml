@@ -94,6 +94,7 @@
             android:id="@+id/listFragment_rv"
             android:layout_width="409dp"
             android:layout_height="wrap_content"
+
             android:padding="@dimen/padding"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:layout_editor_absoluteX="1dp"

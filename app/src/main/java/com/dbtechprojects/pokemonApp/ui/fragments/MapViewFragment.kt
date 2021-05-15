@@ -14,9 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dbtechprojects.pokemonApp.R
 import com.dbtechprojects.pokemonApp.databinding.FragmentMapBinding
-import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
 import com.dbtechprojects.pokemonApp.ui.activities.MainActivity
-import com.dbtechprojects.pokemonApp.ui.viewmodels.ListViewModel
 import com.dbtechprojects.pokemonApp.ui.viewmodels.MapViewModel
 import com.dbtechprojects.pokemonApp.util.ImageUtils
 import com.dbtechprojects.pokemonApp.util.Resource
@@ -37,7 +35,7 @@ class MapViewFragment : Fragment(R.layout.fragment_map) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMapBinding.bind(view)
 
-        //setup on custom backButton
+        //setup click listener on custom backButton
 
         binding.mapFragmentBack.setOnClickListener {
             findNavController().popBackStack()

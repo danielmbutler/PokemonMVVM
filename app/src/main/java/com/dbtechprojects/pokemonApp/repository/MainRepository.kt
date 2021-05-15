@@ -20,7 +20,8 @@ class MainRepository @Inject constructor(
     private val pokeDao: PokemonDao
 ) : DefaultRepository {
 
-    private val fiveMinutesAgo = System.currentTimeMillis() - Constants.CACHE // used to confirm whether items where stored longer than 5 mins ago
+    // used to confirm whether items where stored longer than 5 mins ago
+    private val fiveMinutesAgo = System.currentTimeMillis() - Constants.CACHE
 
 
     override suspend fun getPokemonList(): Resource<List<CustomPokemonListItem>> {

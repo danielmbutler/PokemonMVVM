@@ -11,7 +11,7 @@ import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
 
 // Room Database Class
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = [CustomPokemonListItem::class, PokemonDetailItem::class], version = 11, exportSchema = false)
+@Database(entities = [CustomPokemonListItem::class, PokemonDetailItem::class], version = 12, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class PokemonDatabase : RoomDatabase() {
 

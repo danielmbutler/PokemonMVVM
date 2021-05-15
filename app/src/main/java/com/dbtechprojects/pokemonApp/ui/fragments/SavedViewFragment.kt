@@ -3,6 +3,7 @@ package com.dbtechprojects.pokemonApp.ui.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -34,6 +35,7 @@ class SavedViewFragment : Fragment(R.layout.fragment_saved) {
     private lateinit var pokemonSavedListAdapter: PokemonSavedListAdapter
 
     private var count = 0 // used to keep track of saved pokemon
+    private var savedList = mutableListOf<CustomPokemonListItem>() // used to keep track of saved pokemon
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,6 +44,11 @@ class SavedViewFragment : Fragment(R.layout.fragment_saved) {
         //setup backbutton
         binding.savedFragmentBack.setOnClickListener {
             findNavController().popBackStack()
+        }
+
+        //setup settings icon
+        binding.listFragmentSettingsImg.setOnClickListener {
+            deleteAllPokemon()
         }
 
         lifecycleScope.launchWhenStarted {
@@ -83,6 +90,8 @@ class SavedViewFragment : Fragment(R.layout.fragment_saved) {
 
     }
 
+    // setup observers from viewmodel
+
     private fun initObservers() {
         viewModel.savedPokemon.observe(viewLifecycleOwner, Observer { savedPokemon ->
             when (savedPokemon) {
@@ -91,6 +100,7 @@ class SavedViewFragment : Fragment(R.layout.fragment_saved) {
                         if (savedPokemon.data.isNotEmpty()) {
 
                             count = savedPokemon.data.size
+                            savedList = savedPokemon.data as MutableList<CustomPokemonListItem>
                             pokemonSavedListAdapter.setList(savedPokemon.data)
                             binding.savedFragmentRv.invalidate()
                             pokemonSavedListAdapter.notifyDataSetChanged()
@@ -113,21 +123,65 @@ class SavedViewFragment : Fragment(R.layout.fragment_saved) {
         })
     }
 
+    // function to delete pokemon after bin png is clicked in Recyclerview
+
     private fun deletePokemon(customPokemonListItem: CustomPokemonListItem, pos: Int) {
 
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setMessage("Are you sure ?")
+        val builder = AlertDialog.Builder(requireContext(), R.style.MyDialogTheme) // using custom theme
+        builder.setMessage("Are you sure you want to delete this Pokemon ?")
             .setCancelable(false)
             .setPositiveButton("Yes") { dialog, id ->
                 customPokemonListItem.isSaved = "false"
                 pokemonSavedListAdapter.removeItemAtPosition(pos)
-                pokemonSavedListAdapter.notifyDataSetChanged()
-                count -= 1
+                pokemonSavedListAdapter.notifyDataSetChanged() // update RV
+                count -= 1 // update count
                 Log.d(TAG, count.toString())
-                if (count == 0){
+                if (count == 0) {
                     binding.savedFragmentPlaceholder.isVisible = true
                 }
                 viewModel.deletePokemon(customPokemonListItem)
+
+            }
+            .setNegativeButton("No") { dialog, id ->
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
+
+
+    }
+
+    // function to delete pokemon after settings Icon is clicked is clicked in Recyclerview
+
+    private fun deleteAllPokemon() {
+
+        val builder = AlertDialog.Builder(requireContext(), R.style.MyDialogTheme) // using custom theme
+        builder.setMessage("Are you sure you want to delete all saved Pokemon ?")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { dialog, id ->
+
+                if (count > 0) {
+
+                    //update status and insert
+                    for (i in savedList) {
+                        i.isSaved = "false"
+                        viewModel.deletePokemon(i)
+
+                    }
+
+                    // clear list and update RV
+                    savedList.clear()
+                    pokemonSavedListAdapter.setList(savedList)
+                    pokemonSavedListAdapter.notifyDataSetChanged()
+                    binding.savedFragmentPlaceholder.isVisible = true
+
+                    //reset count
+                    count = 0 // update count
+                } else{
+                    Toast.makeText(requireContext(), "No saved pokemon", Toast.LENGTH_SHORT).show()
+                }
+
 
             }
             .setNegativeButton("No") { dialog, id ->

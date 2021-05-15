@@ -2,6 +2,8 @@ package com.dbtechprojects.pokemonApp.models.api_responses
 
 import com.google.gson.annotations.SerializedName
 
+// data class for PokemonListItem
+
 
 data class PokemonListItem(
     @SerializedName("count")

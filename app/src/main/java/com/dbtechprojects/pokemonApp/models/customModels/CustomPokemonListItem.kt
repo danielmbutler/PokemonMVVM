@@ -22,6 +22,9 @@ data class CustomPokemonListItem(
     @ColumnInfo(name = "id")
     val id: Int? = null,
 
+    @ColumnInfo(name = "api")
+    val apiId: Int, // used to query api
+
     @ColumnInfo(name = "image")
     val Image: String? =null,
 

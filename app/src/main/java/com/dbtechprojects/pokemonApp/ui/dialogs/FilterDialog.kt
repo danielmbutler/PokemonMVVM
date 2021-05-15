@@ -10,6 +10,8 @@ import android.widget.ImageView
 import androidx.fragment.app.DialogFragment
 import com.dbtechprojects.pokemonApp.R
 
+// Dialog fragment for filter option in list fragment
+
 class FilterDialog(var fragmentlistener: TypePicker) : DialogFragment() {
 
     var listener: TypePicker? = null

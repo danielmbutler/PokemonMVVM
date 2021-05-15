@@ -6,6 +6,8 @@ import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
+// class needed to declare hilt application
+
 @HiltAndroidApp
 class HiltAndroidApp : Application(), Configuration.Provider{
     @Inject
