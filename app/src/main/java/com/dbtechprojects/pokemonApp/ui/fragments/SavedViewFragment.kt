@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -32,9 +33,16 @@ class SavedViewFragment : Fragment(R.layout.fragment_saved) {
     private val viewModel: SavedViewModel by viewModels()
     private lateinit var pokemonSavedListAdapter: PokemonSavedListAdapter
 
+    private var count = 0 // used to keep track of saved pokemon
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSavedBinding.bind(view)
+
+        //setup backbutton
+        binding.savedFragmentBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         lifecycleScope.launchWhenStarted {
             setupRv()
@@ -53,7 +61,7 @@ class SavedViewFragment : Fragment(R.layout.fragment_saved) {
                 // create bundle to pass to next fragment
                 val bundle = Bundle()
                 bundle.putParcelable("pokemon", item)
-                findNavController().navigate(R.id.action_listFragment_to_detailFragment, bundle)
+                findNavController().navigate(R.id.action_savedViewFragment_to_detailFragment, bundle)
             }
 
         })
@@ -82,16 +90,20 @@ class SavedViewFragment : Fragment(R.layout.fragment_saved) {
                     savedPokemon.data?.let {
                         if (savedPokemon.data.isNotEmpty()) {
 
+                            count = savedPokemon.data.size
                             pokemonSavedListAdapter.setList(savedPokemon.data)
                             binding.savedFragmentRv.invalidate()
                             pokemonSavedListAdapter.notifyDataSetChanged()
 
 
+                        } else {
+                            binding.savedFragmentPlaceholder.isVisible = true
                         }
                     }
                 }
                 is Resource.Error -> {
                     Log.d(TAG, savedPokemon.message.toString())
+                    binding.savedFragmentPlaceholder.isVisible = true
                 }
                 is Resource.Loading -> {
                     Log.d(TAG, "LOADING")
@@ -110,6 +122,11 @@ class SavedViewFragment : Fragment(R.layout.fragment_saved) {
                 customPokemonListItem.isSaved = "false"
                 pokemonSavedListAdapter.removeItemAtPosition(pos)
                 pokemonSavedListAdapter.notifyDataSetChanged()
+                count -= 1
+                Log.d(TAG, count.toString())
+                if (count == 0){
+                    binding.savedFragmentPlaceholder.isVisible = true
+                }
                 viewModel.deletePokemon(customPokemonListItem)
 
             }
@@ -122,5 +139,6 @@ class SavedViewFragment : Fragment(R.layout.fragment_saved) {
 
 
     }
+
 
 }

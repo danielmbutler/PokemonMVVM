@@ -23,7 +23,13 @@ data class CustomPokemonListItem(
     val id: Int? = null,
 
     @ColumnInfo(name = "image")
-    val Image: String,
+    val Image: String? =null,
+
+    @ColumnInfo(name = "positionLeft")
+    val positionLeft: Int? = null,
+
+    @ColumnInfo(name = "positionTop")
+    val positionTop: Int? = null,
 
     @ColumnInfo(name = "type")
     val type: String, // used for filtering more can be added later

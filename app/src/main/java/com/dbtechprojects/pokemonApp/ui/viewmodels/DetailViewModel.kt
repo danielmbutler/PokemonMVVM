@@ -8,6 +8,7 @@ import com.dbtechprojects.pokemonApp.models.api_responses.PokemonDetailItem
 import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
 import com.dbtechprojects.pokemonApp.repository.DefaultRepository
 import com.dbtechprojects.pokemonApp.util.Resource
+import com.dbtechprojects.pokemonApp.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(private val repository: DefaultRepository) : ViewModel() {
 
-    private val _pokemonDetails = MutableLiveData<Resource<PokemonDetailItem>>()
+    private val _pokemonDetails = SingleLiveEvent<Resource<PokemonDetailItem>>()// single live event to stop stale items being stored in Live Data
     val pokemonDetails: LiveData<Resource<PokemonDetailItem>>
         get() = _pokemonDetails
 
@@ -24,6 +25,11 @@ class DetailViewModel @Inject constructor(private val repository: DefaultReposit
     private val _pokemonSaveIntent = MutableLiveData<Boolean>()
     val pokemonSaveIntent: LiveData<Boolean>
         get() = _pokemonSaveIntent
+
+    // value for map plotting
+
+    val plotLeft = (0..600).random()
+    val plotTop = (0..600).random()
 
 
     fun getPokemonDetails(id: String) {
@@ -34,8 +40,7 @@ class DetailViewModel @Inject constructor(private val repository: DefaultReposit
     }
 
 
-
-    fun savePokemon(customPokemonListItem: CustomPokemonListItem){
+    fun savePokemon(customPokemonListItem: CustomPokemonListItem) {
         _pokemonSaveIntent.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
             repository.savePokemon(customPokemonListItem)

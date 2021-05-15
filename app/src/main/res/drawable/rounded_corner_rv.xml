@@ -12,9 +12,9 @@
         android:right="1dp"
         android:top="1dp" />
 
-    <solid android:color="@color/white" />
+    <solid android:color="@color/pokemon_card_color_dark" />
 
     <stroke
         android:width="3dp"
-        android:color="@color/pokemon_blue" />
+        android:color="@color/pokemon_dark_red" />
 </shape>

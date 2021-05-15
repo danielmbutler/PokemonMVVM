@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pokemon_blue">
+    android:background="@color/pokemon_dark_red">
 
     <ImageView
         android:id="@+id/listFragment_settingsImg"
@@ -25,10 +25,9 @@
         android:indeterminate="true"
         android:indeterminateDrawable="@drawable/progress_bar"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SavedFragment_Title"
         tools:visibility="visible" />
 
     <TextView
@@ -46,22 +45,43 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
+    <TextView
+        android:id="@+id/savedFragment_placeholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Your saved Pokemon will appear here..."
+        android:textColor="@color/pokemon_yellow"
+        android:textSize="@dimen/pokemon_title_text_size"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SavedFragment_Title" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/savedFragment_rv"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="16dp"
         android:layout_marginBottom="?actionBarSize"
-        android:background="@drawable/rounded_corner_rv"
         android:padding="@dimen/padding"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/SavedFragment_Title"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp"
         tools:listitem="@layout/list_saved_row_item" />
+
+    <ImageView
+        android:id="@+id/savedFragment_back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/SavedFragment_Title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/SavedFragment_Title"
+        app:srcCompat="@drawable/ic_baseline_arrow_back_ios_24" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

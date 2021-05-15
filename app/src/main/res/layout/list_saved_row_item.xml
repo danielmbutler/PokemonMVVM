@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/rounded_corner_card_dark"
     android:layout_height="125dp"
     android:orientation="vertical">
 
@@ -16,6 +17,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/pokemon_card_color"
             android:orientation="vertical">
 
             <ImageView
@@ -35,8 +37,8 @@
 
             <ImageView
                 android:id="@+id/row_delete_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_margin="@dimen/padding"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -52,6 +54,7 @@
                 android:gravity="start"
                 android:text="@string/name"
                 android:textSize="@dimen/pokemon_type_text_size"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="Grass" />
@@ -63,10 +66,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="@dimen/pokemon_title_text_size"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/row_delete_img"
                 app:layout_constraintStart_toEndOf="@+id/row_card_image"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Ivysaur" />

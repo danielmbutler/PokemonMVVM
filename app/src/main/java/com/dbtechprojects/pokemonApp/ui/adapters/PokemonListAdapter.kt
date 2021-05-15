@@ -2,6 +2,7 @@ package com.dbtechprojects.pokemonApp.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.dbtechprojects.pokemonApp.R
 import com.dbtechprojects.pokemonApp.databinding.ListRowItemBinding
@@ -19,12 +20,14 @@ class PokemonListAdapter() : RecyclerView.Adapter<PokemonListAdapter.PokemonView
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: CustomPokemonListItem, onClickListener: OnClickListener?) {
+            itemView.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.slidein_and_fade)
             binding.rowCardTitle.text = item.name.capitalize(Locale.ROOT) // captilise name
             binding.rowCardType.text = "Type: ${item.type?.capitalize(Locale.ROOT)}"
-            ImageUtils.loadImage(itemView.context, binding.rowCardImage, item.Image)
+            item.Image?.let { ImageUtils.loadImage(itemView.context, binding.rowCardImage, it) }
 
 
             // setting click listener to be overridden in ListFragment
+            if (item.name != "no items found")
             binding.cardView.setOnClickListener {
                 onClickListener?.onClick(item)
             }

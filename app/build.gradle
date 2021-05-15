@@ -89,5 +89,7 @@ dependencies {
     //work manager
     implementation "androidx.work:work-runtime-ktx:$work_version"
 
+    //Circular Imgview
+    implementation 'com.mikhaellopez:circularimageview:4.2.0'
 
 }

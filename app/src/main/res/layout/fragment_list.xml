@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pokemon_blue">
+    android:background="@color/pokemon_dark_red">
 
     <ImageView
         android:id="@+id/listFragment_settingsImg"
@@ -27,6 +27,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/listFragment_search_view" />
 
+
     <LinearLayout
         android:layout_width="0px"
         android:layout_height="0px"
@@ -35,18 +36,17 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
+        android:id="@+id/listFragment_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
+        android:layout_marginTop="10dp"
         android:indeterminateDrawable="@drawable/progress_bar"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/listFragment_swipeToRefresh"
         tools:visibility="visible" />
 
     <TextView
@@ -63,15 +63,15 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <androidx.appcompat.widget.SearchView
         android:id="@+id/listFragment_search_view"
+        style="@style/SearchViewStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:background="@color/pokemon_yellow"
         android:clickable="true"
         android:focusable="true"
+        android:imeOptions="flagNoExtractUi"
         android:queryHint="Ivysaur"
         app:iconifiedByDefault="false"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -81,20 +81,19 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/listFragment_swipeToRefresh"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:imeOptions="flagNoExtractUi"
-        app:layout_constraintBottom_toTopOf="@id/listFragment_map_FAB"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/listFragment_search_view">
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listFragment_rv"
             android:layout_width="409dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="?actionBarSize"
-            android:background="@drawable/rounded_corner_rv"
             android:padding="@dimen/padding"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:layout_editor_absoluteX="1dp"
@@ -104,25 +103,27 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/listFragment_map_FAB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/FAB_Margin"
-        android:background="@drawable/pokeball"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
-    <ImageView
+    <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/listFragment_saved_FAB"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_margin="@dimen/FAB_Margin"
         android:src="@drawable/pokeball"
-        android:clickable="true"
+        app:civ_border="false"
+        app:civ_shadow="true"
+        app:civ_shadow_color="@color/pokemon_blue_shadow"
+        app:civ_shadow_radius="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/listFragment_map_FAB"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_margin="@dimen/FAB_Margin"
+        android:src="@drawable/map_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

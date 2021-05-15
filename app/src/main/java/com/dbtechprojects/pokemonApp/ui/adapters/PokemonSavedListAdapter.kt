@@ -23,7 +23,7 @@ class PokemonSavedListAdapter() : RecyclerView.Adapter<PokemonSavedListAdapter.P
         fun bind(item: CustomPokemonListItem, onClickListener: OnClickListener?, onDeleteListener: OnDeleteListener?, pos: Int) {
             binding.rowCardTitle.text = item.name.capitalize(Locale.ROOT) // captilise name
             binding.rowCardType.text = "Type: ${item.type?.capitalize(Locale.ROOT)}"
-            ImageUtils.loadImage(itemView.context, binding.rowCardImage, item.Image)
+            item.Image?.let { ImageUtils.loadImage(itemView.context, binding.rowCardImage, it) }
 
 
             // setting click listener to be overridden in SavedFragment

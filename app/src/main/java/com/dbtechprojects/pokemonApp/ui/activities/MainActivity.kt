@@ -20,12 +20,16 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_PokemonApp) // set theme of app once main activity has loaded
         setContentView(R.layout.activity_main)
 
         workerCheck()
 
         Log.d(TAG, "onCreate Called")
     }
+
+
+    // setup background worker to periodically check for new Pokemon and add it to our database
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun workerCheck() {

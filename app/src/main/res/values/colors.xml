@@ -4,10 +4,13 @@
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="pokemon_yellow">#FFDE00</color>
     <color name="pokemon_dark_red">#CC0000</color>
     <color name="pokemon_blue">#3B4CCA</color>
+    <color name="pokemon_blue_shadow">#232e79</color>
+    <color name="pokemon_card_color">#B78B43</color>
+    <color name="pokemon_card_color_dark">#765b41</color>
+    <color name="pokemon_card_save_button">#d1a3a4</color>
 </resources>

@@ -51,13 +51,9 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
 
     private fun setupFabButtons() {
         binding.listFragmentMapFAB.setOnClickListener {
-            if (pokemonList.isNotEmpty()){
-                val bundle = Bundle()
-                bundle.putParcelableArrayList("list", pokemonList)
-                findNavController().navigate(R.id.action_listFragment_to_mapViewFragment, bundle)
-            } else {
-                Toast.makeText(requireContext(), "No Pokemon found, Please try again later", Toast.LENGTH_SHORT).show()
-            }
+
+            findNavController().navigate(R.id.action_listFragment_to_mapViewFragment)
+
 
         }
         binding.listFragmentSavedFAB.setOnClickListener {
@@ -76,12 +72,21 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
     }
 
     private fun setupSearchView() {
+        binding.listFragmentSearchView.setOnClickListener {
+            if (binding.listFragmentSearchView.query.isEmpty()) {
+                viewModel.getPokemonList()
+            }
+
+        }
         binding.listFragmentSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
-                    Log.d(TAG, query)
+                    viewModel.searchPokemonByName(query)
+                } else {
+                    viewModel.getPokemonList()
                 }
-                return true
+                return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -92,7 +97,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
                         viewModel.searchPokemonByName(newText)
                     }
                 }
-                return true
+                return false
             }
 
         })
@@ -135,17 +140,25 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
                 is Resource.Success -> {
                     if (list.data != null) {
                         if (list.data.isNotEmpty()) {
-                            showProgressbar(false)
                             Log.d(TAG, list.data.toString())
                             pokemonList = list.data as ArrayList<CustomPokemonListItem>
                             pokemonListAdapter.setList(list.data)
                             binding.listFragmentRv.invalidate()
                             pokemonListAdapter.notifyDataSetChanged()
+                            showProgressbar(false)
 
                             // swipe to refresh layout is used then lets stop the refresh animation here
                             if (binding.listFragmentSwipeToRefresh.isRefreshing) {
                                 binding.listFragmentSwipeToRefresh.isRefreshing = false
                             }
+                        } else {
+                            // setup empty recyclerview
+                            showProgressbar(false)
+                            val emptyItem = CustomPokemonListItem(name = "no items found", type = "none")
+                            pokemonList.add(emptyItem)
+                            pokemonListAdapter.setList(pokemonList)
+                            binding.listFragmentRv.invalidate()
+                            pokemonListAdapter.notifyDataSetChanged()
                         }
                     }
 
@@ -161,10 +174,10 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
         })
     }
 
-    private fun showProgressbar(isVisible: Boolean) {
-        binding.progressBar.isVisible = isVisible
-    }
 
+    private fun showProgressbar(isVisible: Boolean) {
+        binding.listFragmentProgress.isVisible = isVisible
+    }
 
     // get type chosen by user in dialog
 

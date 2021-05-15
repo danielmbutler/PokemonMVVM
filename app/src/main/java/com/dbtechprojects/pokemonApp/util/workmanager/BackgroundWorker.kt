@@ -63,7 +63,10 @@ class BackgroundWorker @AssistedInject constructor(
                             val newPokemonObj = CustomPokemonListItem(
                                 name = newPokemon.name,
                                 Image = newPokemon.sprites.front_default,
-                                type = newPokemon.types?.get(0)?.type?.name.toString()
+                                type = newPokemon.types?.get(0)?.type?.name.toString(),
+                                // set positions for map
+                                positionLeft = (0..1500).random(),
+                                positionTop = (0..1500).random()
                             )
                             repository.savePokemon(newPokemonObj)
 

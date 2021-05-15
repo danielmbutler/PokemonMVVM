@@ -6,14 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.view.marginBottom
-import androidx.core.view.marginEnd
-import androidx.core.view.marginStart
-import androidx.core.view.marginTop
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -56,6 +49,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
                 Log.d(TAG, pokemon.type.toString())
                 pokemon.type?.let { it1 -> setType(it1) }
                 Log.d(TAG, pokemon.id.toString())
+                // setup name
+                binding.detailFragmentTitleName.text = pokemon.name.capitalize()
                 getPokemonDetails(pokemon.id)
                 subscribeObservers()
             }
@@ -110,9 +105,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
                         setupView(pokemon)
 
                         //inform user that cache has expired and we cannot retrieve up to date details
-                        Toast.makeText(requireContext(),
+                        Toast.makeText(
+                            requireContext(),
                             "Unable to retrieve up to date details !, please check network connectivity",
-                            Toast.LENGTH_SHORT)
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
 
                     }
@@ -131,7 +128,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
         })
     }
 
-    private fun setupView(pokemon: PokemonDetailItem){
+    private fun setupView(pokemon: PokemonDetailItem) {
         // load image
         pokemon.sprites.otherSprites.artwork.front_default?.let { image ->
             ImageUtils.loadImage(requireContext(), binding.detailFragmentImage, image)
@@ -144,6 +141,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
             val textView = TextView(requireContext())
             textView.text = i.ability.name.capitalize(Locale.ROOT)
             textView.textSize = 15f
+            textView.setTextColor(Color.WHITE)
             textView.layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -153,36 +151,82 @@ class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
 
         }
 
-        // load stats
+        val pokemonstats = mutableListOf<Int>()
 
-        // load abilities
+
+        // load stats
 
         for (i in pokemon.stat) {
             val textView = TextView(requireContext())
             val progressBar = ProgressBar(requireContext(), null, android.R.attr.progressBarStyleHorizontal)
             progressBar.progress = i.baseStat ?: 0
-            progressBar.progressTintList = ColorStateList.valueOf(Color.RED)
+            progressBar.progressTintList = ColorStateList.valueOf(Color.WHITE)
             textView.text = i.stat.name.capitalize(Locale.ROOT) + " ${i.baseStat}"
             textView.textSize = 15f
+            textView.setTextColor(Color.WHITE)
             textView.layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
+            i.baseStat?.let { pokemonstats.add(it) }
             binding.statsContainer.addView(textView)
             binding.statsContainer.addView(progressBar)
 
 
         }
 
+        // setup stars
+        //if average of pokemon stats is less than 60 leave at one star if more than 60 but less than 80 2 stars,more than 80 3 stars
+        val pokemonAverage = pokemonstats.sum() / 6
+
+        Log.d(TAG, "pokemon aveage is $pokemonAverage")
+
+        // get dp value by checking screenSize
+        val dp = (40 * (context?.resources?.displayMetrics?.density!!)).toInt()
+
+        if (pokemonAverage in 61..79) {
+            // add 1 star
+
+
+            Log.d(TAG, "adding 1 star pokemon aveage is $pokemonAverage")
+            val img = ImageView(requireContext())
+            val lp = LinearLayout.LayoutParams(dp, dp) //make the image same size as first star
+            img.layoutParams = lp
+            ImageUtils.loadImageDrawable(requireContext(), img, R.drawable.star)
+
+            binding.detailFragmentStarContainer.addView(img)
+
+        }
+
+        if (pokemonAverage > 79) {
+            // add 2 stars
+
+
+            Log.d(TAG, "adding 1 star pokemon aveage is $pokemonAverage")
+            val img = ImageView(requireContext())
+            val img2 = ImageView(requireContext())
+            val lp = LinearLayout.LayoutParams(dp, dp) //make the image same size as first star
+            img.layoutParams = lp
+            img2.layoutParams = lp
+            ImageUtils.loadImageDrawable(requireContext(), img, R.drawable.star)
+            ImageUtils.loadImageDrawable(requireContext(), img2, R.drawable.star)
+
+            binding.detailFragmentStarContainer.addView(img)
+            binding.detailFragmentStarContainer.addView(img2)
+
+        }
+
         // setup last location plot
-        ImageUtils.loadImage(requireContext(), binding.mapviewPlot, mPokemon.Image)
+        mPokemon.Image?.let { ImageUtils.loadImage(requireContext(), binding.mapviewPlot, it) }
 
         // set up random position
         ImageUtils.setMargins(
             binding.mapviewPlot,
-            (0..600).random(),
-            (0..600).random(),
+            viewModel.plotLeft,
+            viewModel.plotTop
         )
+
+
     }
 
     private fun getPokemonDetails(id: Int?) {
