@@ -96,6 +96,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail), OnMapReadyCallback {
                 }
                 is Resource.Error -> {
                     Log.d(TAG, pokemondetails.message.toString())
+                    Toast.makeText(requireContext(), "Error retrieving results please check internet connection", Toast.LENGTH_LONG).show()
                 }
                 is Resource.Loading -> {
                     Log.d(TAG, pokemondetails.message.toString())

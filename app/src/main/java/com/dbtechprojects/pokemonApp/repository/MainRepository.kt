@@ -7,6 +7,7 @@ import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
 import com.dbtechprojects.pokemonApp.persistence.PokemonDao
 import com.dbtechprojects.pokemonApp.util.Constants
 import com.dbtechprojects.pokemonApp.util.Resource
+import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -71,9 +72,54 @@ class MainRepository @Inject constructor(
 
                 Log.d(TAG, "CACHE EXPIRED RETRIEVING NEW ITEM")
 
+                // could throw exception if no internet available
 
-                val apiResult = pokeApi.getPokemonDetail(id)
+                try {
+                    val apiResult = pokeApi.getPokemonDetail(id)
+                    if (apiResult.isSuccessful) {
+
+                        if (apiResult.body() != null) {
+
+                            // add timestamp
+                            val newPokemon = apiResult.body()
+                            newPokemon!!.timestamp = System.currentTimeMillis().toString()
+
+                            // store results in DB
+                            pokeDao.insertPokemonDetailsItem(newPokemon)
+                            // retrieve results from DB
+
+                            val newDBRead = pokeDao.getPokemonDetails(id)
+
+                            // return from DB
+
+                            return Resource.Success(newDBRead!!)
+                        } else {
+                            // return expired object to let user know cache has expired and we cannot find new items from Api
+                            return Resource.Expired("Cache expired and cannot retrieve new Pokemon please check network connectivity ", dbResult)
+                        }
+                    } else {
+                        return Resource.Error(apiResult.message())
+                    }
+                } catch (e: Exception) {
+                    return Resource.Error("error retrieving results")
+                }
                 // check if response is successful
+
+
+            } else {
+                // cache is sufficient let return it
+                Log.d(TAG, "CACHE IS SUFFICIENT RETURN ITEM FROM DB")
+                Log.d(TAG, "CACHED TIME : ${dbResult.timestamp} $fiveMinutesAgo")
+                return Resource.Success(dbResult)
+            }
+
+        } else {
+            // DB is empty so lets check the api
+            // could throw exception if no internet available
+
+            try {
+                // check if response is successful
+                val apiResult = pokeApi.getPokemonDetail(id)
                 if (apiResult.isSuccessful) {
 
                     if (apiResult.body() != null) {
@@ -89,52 +135,18 @@ class MainRepository @Inject constructor(
                         val newDBRead = pokeDao.getPokemonDetails(id)
 
                         // return from DB
-
+                        Log.d(TAG, "NO ITEM IN DB FOUND, ITEM HAS BEEN RETRIEVED FROM API")
                         return Resource.Success(newDBRead!!)
                     } else {
-                        // return expired object to let user know cache has expired and we cannot find new items from Api
-                        return Resource.Expired("Cache expired and cannot retrieve new Pokemon please check network connectivity ", dbResult)
+                        return Resource.Error(apiResult.message())
                     }
                 } else {
                     return Resource.Error(apiResult.message())
                 }
-
-
-            } else {
-                // cache is sufficient let return it
-                Log.d(TAG, "CACHE IS SUFFICIENT RETURN ITEM FROM DB")
-                Log.d(TAG, "CACHED TIME : ${dbResult.timestamp} $fiveMinutesAgo")
-                return Resource.Success(dbResult)
+            } catch (e: Exception) {
+                return Resource.Error("error retrieving results")
             }
 
-        } else {
-            // DB is empty so lets check the api
-            val apiResult = pokeApi.getPokemonDetail(id)
-
-            // check if response is successful
-            if (apiResult.isSuccessful) {
-
-                if (apiResult.body() != null) {
-
-                    // add timestamp
-                    val newPokemon = apiResult.body()
-                    newPokemon!!.timestamp = System.currentTimeMillis().toString()
-
-                    // store results in DB
-                    pokeDao.insertPokemonDetailsItem(newPokemon)
-                    // retrieve results from DB
-
-                    val newDBRead = pokeDao.getPokemonDetails(id)
-
-                    // return from DB
-                    Log.d(TAG, "NO ITEM IN DB FOUND, ITEM HAS BEEN RETRIEVED FROM API")
-                    return Resource.Success(newDBRead!!)
-                } else {
-                    return Resource.Error(apiResult.message())
-                }
-            } else {
-                return Resource.Error(apiResult.message())
-            }
 
         }
 

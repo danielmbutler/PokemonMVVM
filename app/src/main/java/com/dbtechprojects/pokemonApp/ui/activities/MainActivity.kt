@@ -1,14 +1,16 @@
 package com.dbtechprojects.pokemonApp.ui.activities
 
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.work.*
 import com.dbtechprojects.pokemonApp.R
 import com.dbtechprojects.pokemonApp.util.workmanager.BackgroundWorker
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 
@@ -22,6 +24,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_PokemonApp) // set theme of app once main activity has loaded
         setContentView(R.layout.activity_main)
+
+        // internet check
+        if (!isConnected()){
+            Toast.makeText(this, "no internet access detected, please check internet connection", Toast.LENGTH_LONG).show()
+        }
 
         workerCheck()
 
@@ -50,9 +57,9 @@ class MainActivity : AppCompatActivity() {
                 .setRequiresBatteryNotLow(true)
                 .build()
 
-            // run every 5 mins
+            // run every 15 mins
 
-            val backgroundWorker = PeriodicWorkRequest.Builder(BackgroundWorker::class.java, 5, TimeUnit.MINUTES)
+            val backgroundWorker = PeriodicWorkRequest.Builder(BackgroundWorker::class.java, 15, TimeUnit.MINUTES)
                 .addTag("new_pokemon_checker") // optional
                 .setConstraints(constraints) // optional
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS) // back off in the event of a worker job failing
@@ -67,6 +74,14 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    // function to check if internet is available
+
+    @Throws(InterruptedException::class, IOException::class)
+    private fun isConnected(): Boolean {
+        val command = "ping -c 1 google.com"
+        return Runtime.getRuntime().exec(command).waitFor() == 0
     }
 
     private fun cancelWorkers() {
