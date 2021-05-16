@@ -49,7 +49,7 @@ class BackgroundWorker @AssistedInject constructor(
             }
 
             // check API for details on next pokemon
-            val nextPokemon = lastStoredPokemonObject.id + 1
+            val nextPokemon = lastStoredPokemonObject.apiId + 1
             Log.d(TAG, "searched pokemon: $nextPokemon")
             Log.d(TAG, "lastPokemon: $nextPokemon")
             val apiResult = repository.getPokemonDetail(nextPokemon.toString())
