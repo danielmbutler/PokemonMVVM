@@ -217,11 +217,11 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
                         } else {
                             // setup empty recyclerview
                             showProgressbar(false)
-                            showEmptyRecyclerView()
+                            showEmptyRecyclerViewError()
 
                         }
                     } else {
-                        showEmptyRecyclerView()
+                        showEmptyRecyclerViewError()
                     }
 
                 }
@@ -229,7 +229,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
                     Log.d(TAG, list.message.toString())
                     showProgressbar(false)
                     // setup empty recyclerview
-                    showEmptyRecyclerView()
+                    showEmptyRecyclerViewError()
 
                 }
                 is Resource.Loading -> {
@@ -239,7 +239,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
         })
     }
 
-    private fun showEmptyRecyclerView(){
+    private fun showEmptyRecyclerViewError(){
       Toast.makeText(requireContext(), "no items found", Toast.LENGTH_SHORT).show()
     }
 

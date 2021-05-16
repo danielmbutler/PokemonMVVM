@@ -1,4 +1,4 @@
-package com.dbtechprojects.gamedeals.api
+package com.dbtechprojects.pokemonApp.api
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.dbtechprojects.pokemonApp.api.FakeApiImplementation

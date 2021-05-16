@@ -1,6 +1,7 @@
 package com.dbtechprojects.pokemonApp.util.testsuites
 
-import com.dbtechprojects.gamedeals.api.ApiIsolationTests
+import com.dbtechprojects.pokemonApp.api.ApiIsolationTests
+import com.dbtechprojects.pokemonApp.database.RoomDatabaseTest
 
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
@@ -8,6 +9,7 @@ import org.junit.runners.Suite
 
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
-    ApiIsolationTests::class
+    ApiIsolationTests::class,
+    RoomDatabaseTest::class
 )
 class DataIsolationTests

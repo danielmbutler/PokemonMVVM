@@ -69,7 +69,6 @@ class PokemonListAdapter() : RecyclerView.Adapter<PokemonListAdapter.PokemonView
     }
 
     fun setList(list: List<CustomPokemonListItem>) {
-        pokemonList.clear()
         pokemonList = list as MutableList<CustomPokemonListItem>
     }
 
