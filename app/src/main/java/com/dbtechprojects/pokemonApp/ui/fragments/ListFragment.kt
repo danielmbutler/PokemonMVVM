@@ -33,7 +33,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
     }
     private val viewModel: ListViewModel by viewModels()
     private lateinit var pokemonListAdapter: PokemonListAdapter
-    private  var pokemonList = mutableListOf<CustomPokemonListItem>()
+    private var pokemonList = mutableListOf<CustomPokemonListItem>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentListBinding.bind(view)
@@ -239,8 +239,8 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
         })
     }
 
-    private fun showEmptyRecyclerViewError(){
-      Toast.makeText(requireContext(), "no items found", Toast.LENGTH_SHORT).show()
+    private fun showEmptyRecyclerViewError() {
+        Toast.makeText(requireContext(), "no items found", Toast.LENGTH_SHORT).show()
     }
 
 

@@ -1,6 +1,5 @@
 package com.dbtechprojects.pokemonApp.ui.dialogs
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +14,11 @@ import com.dbtechprojects.pokemonApp.R
 class FilterDialog(var fragmentlistener: TypePicker) : DialogFragment() {
 
     var listener: TypePicker? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setRetainInstance(true) // used to retain fragment configuration on rotation
+    }
 
 
     override fun onCreateView(
@@ -62,5 +66,11 @@ class FilterDialog(var fragmentlistener: TypePicker) : DialogFragment() {
 
     interface TypePicker {
         fun typeToSearch(type: String)
+    }
+
+    // handle rotation
+    override fun onDestroyView() {
+        if (dialog != null && retainInstance) dialog!!.setOnDismissListener(null)
+        super.onDestroyView()
     }
 }
