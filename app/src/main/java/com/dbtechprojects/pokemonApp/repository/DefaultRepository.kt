@@ -9,8 +9,9 @@ import com.dbtechprojects.pokemonApp.util.Resource
 
 interface DefaultRepository {
     suspend fun getPokemonList(): Resource<List<CustomPokemonListItem>>
+    suspend fun getPokemonListNextPage(): Resource<List<CustomPokemonListItem>>
     suspend fun getPokemonSavedPokemon(): Resource<List<CustomPokemonListItem>>
-    suspend fun getPokemonDetail(id: String): Resource<PokemonDetailItem>
+    suspend fun getPokemonDetail(id: Int): Resource<PokemonDetailItem>
     suspend fun getLastStoredPokemon(): CustomPokemonListItem
     suspend fun searchPokemonByName(name: String): Resource<List<CustomPokemonListItem>>
     suspend fun searchPokemonByType(type: String): Resource<List<CustomPokemonListItem>>

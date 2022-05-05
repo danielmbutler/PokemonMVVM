@@ -28,12 +28,11 @@ class DetailViewModel @Inject constructor(private val repository: DefaultReposit
         get() = _pokemonSaveIntent
 
     // value for map plotting, held in view model to ensure the same location is plotted after rotation
-
     val plotLeft = (0..600).random()
     val plotTop = (0..600).random()
 
 
-    fun getPokemonDetails(id: String) {
+    fun getPokemonDetails(id: Int) {
         _pokemonDetails.postValue(Resource.Loading("loading"))
         viewModelScope.launch(Dispatchers.IO) {
             _pokemonDetails.postValue(repository.getPokemonDetail(id))

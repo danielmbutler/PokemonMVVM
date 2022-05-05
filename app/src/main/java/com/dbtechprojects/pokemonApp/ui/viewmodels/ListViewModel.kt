@@ -24,11 +24,21 @@ class ListViewModel @Inject constructor(private val repository: DefaultRepositor
         get() = _pokemonList
 
 
+    init {
+        getPokemonList()
+    }
+
+
     fun getPokemonList() {
         _pokemonList.postValue(Resource.Loading("loading"))
-        Log.d("ViewModel", "function called")
         viewModelScope.launch(Dispatchers.IO) {
             _pokemonList.postValue(repository.getPokemonList())
+        }
+    }
+
+    fun getNextPage(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _pokemonList.postValue(repository.getPokemonListNextPage())
         }
     }
 

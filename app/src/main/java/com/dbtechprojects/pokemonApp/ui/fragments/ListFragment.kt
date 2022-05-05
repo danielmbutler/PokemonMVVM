@@ -4,15 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.dbtechprojects.pokemonApp.R
 import com.dbtechprojects.pokemonApp.databinding.FragmentListBinding
 import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
@@ -43,19 +41,11 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
         setupFabButtons()
         initObservers()
 
-        Log.d(TAG, "fragment Loaded")
-        lifecycleScope.launchWhenStarted {
-            viewModel.getPokemonList()
-        }
-
     }
 
     private fun setupFabButtons() {
         binding.listFragmentMapFAB.setOnClickListener {
-
             findNavController().navigate(R.id.action_listFragment_to_mapViewFragment)
-
-
         }
         binding.listFragmentSavedFAB.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_savedViewFragment)
@@ -69,68 +59,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
             transaction.add(dialog, "dialog")
             transaction.commit()
         }
-        binding.listFragmentSettingsImg.setOnClickListener {
 
-            // setup alert to disable or re-enable background tasks
-            setupAlert()
-
-
-        }
-
-    }
-
-    private fun setupAlert() {
-        val workerStatusPref = context?.getSharedPreferences("worker", AppCompatActivity.MODE_PRIVATE)
-
-        val workerStatus = workerStatusPref?.getString("worker", "")
-
-        if (workerStatus!! == "cancel") {
-            val builder = AlertDialog.Builder(requireContext(), R.style.MyDialogTheme) // using custom theme
-            builder.setMessage("Re-enable background searching?")
-                .setCancelable(false)
-                .setPositiveButton("Yes") { dialog, id ->
-
-                    // disable work manager tasks
-                    val pref = context?.getSharedPreferences("worker", AppCompatActivity.MODE_PRIVATE)
-                    val editor = pref?.edit()
-
-                    editor?.let {
-                        editor.putString("worker", "enabled")
-                        editor.commit()
-                    }
-                    Toast.makeText(requireContext(), "Background tasks enabled", Toast.LENGTH_SHORT).show()
-
-                }
-                .setNegativeButton("No") { dialog, id ->
-                    // Dismiss the dialog
-                    dialog.dismiss()
-                }
-            val alert = builder.create()
-            alert.show()
-        } else {
-            val builder = AlertDialog.Builder(requireContext(), R.style.MyDialogTheme) // using custom theme
-            builder.setMessage("Disable background pokemon search tasks ?")
-                .setCancelable(false)
-                .setPositiveButton("Yes") { dialog, id ->
-
-                    // disable work manager tasks
-                    val pref = context?.getSharedPreferences("worker", AppCompatActivity.MODE_PRIVATE)
-                    val editor = pref?.edit()
-
-                    editor?.let {
-                        editor.putString("worker", "cancel")
-                        editor.commit()
-                    }
-                    Toast.makeText(requireContext(), "Background tasks cancelled", Toast.LENGTH_SHORT).show()
-
-                }
-                .setNegativeButton("No") { dialog, id ->
-                    // Dismiss the dialog
-                    dialog.dismiss()
-                }
-            val alert = builder.create()
-            alert.show()
-        }
     }
 
     private fun setupSearchView() {
@@ -182,6 +111,16 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
 
         binding.listFragmentRv.apply {
             adapter = pokemonListAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (!recyclerView.canScrollVertically(1)) {
+                        // recyclerview has reached the bottom so we can now retrieve the next feed items
+                        binding.listFragmentPaginateProgress.visibility = View.VISIBLE
+                        viewModel.getNextPage()
+                    }
+                }
+            })
         }
         // setup swipe to refresh
         binding.listFragmentSwipeToRefresh.setOnRefreshListener {
@@ -246,6 +185,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
 
     private fun showProgressbar(isVisible: Boolean) {
         binding.listFragmentProgress.isVisible = isVisible
+        binding.listFragmentPaginateProgress.visibility = View.GONE
     }
 
     // get type chosen by user in dialog

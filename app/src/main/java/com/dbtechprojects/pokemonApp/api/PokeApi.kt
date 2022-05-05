@@ -16,7 +16,7 @@ interface PokeApi {
 
     @GET("/api/v2/pokemon/{id}")
     suspend fun getPokemonDetail(
-        @Path("id") id: String,
+        @Path("id") id: Int,
 
         ): Response<PokemonDetailItem>
 

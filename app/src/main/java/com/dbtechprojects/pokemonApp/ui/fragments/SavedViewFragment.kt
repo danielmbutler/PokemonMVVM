@@ -27,10 +27,6 @@ private const val TAG = "SavedViewFragment"
 class SavedViewFragment : Fragment(R.layout.fragment_saved) {
 
     lateinit var binding: FragmentSavedBinding
-    val mainActivity: MainActivity by lazy {
-        requireActivity() as MainActivity
-    }
-
     private val viewModel: SavedViewModel by viewModels()
     private lateinit var pokemonSavedListAdapter: PokemonSavedListAdapter
 

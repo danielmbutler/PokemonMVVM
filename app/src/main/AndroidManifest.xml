@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".util.HiltAndroidApp"
@@ -14,23 +15,17 @@
         android:roundIcon="@drawable/pokeball"
         android:supportsRtl="true"
         android:theme="@style/splashTheme">
-        <activity android:name=".ui.activities.MainActivity">
+        <activity android:name=".ui.activities.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- Remove WorkManager default initialization -->
-        <!--https://stackoverflow.com/questions/52657196/android-work-manager-could-not-instantiate-worker-->
-        <provider
-            android:name="androidx.work.impl.WorkManagerInitializer"
-            android:authorities="${applicationId}.workmanager-init"
-            tools:node="remove" />
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
+
 
 
 </manifest>

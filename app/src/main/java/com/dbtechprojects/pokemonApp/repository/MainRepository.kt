@@ -38,7 +38,6 @@ class MainRepository @Inject constructor(
             pokeDao.insertPokemonList(preSeedList)
 
             // read from DB
-
             val initialDBRead = pokeDao.getPokemon()
 
             // return from DB
@@ -49,128 +48,130 @@ class MainRepository @Inject constructor(
 
     }
 
+    override suspend fun getPokemonListNextPage(): Resource<List<CustomPokemonListItem>> {
+        // get id of last Pokemon in local DB
+        val lastStoredPokemonObject = getLastStoredPokemon()
+
+        // check API for details on next pokemon
+        val nextPokemon = lastStoredPokemonObject.apiId + 1
+        val pokemonList = mutableListOf<CustomPokemonListItem>()
+
+        for (i in nextPokemon..(nextPokemon + 9)){
+            when (val apiResult = getPokemonDetail(i)) {
+                is Resource.Success -> {
+
+                    if (apiResult.data != null) {
+                        apiResult.data.let { newPokemon ->
+                            // create custom pokemon object save in DB
+                            val newPokemonObj = CustomPokemonListItem(
+                                name = newPokemon.name,
+                                Image = newPokemon.sprites.front_default,
+                                type = newPokemon.types?.get(0)?.type?.name.toString(),
+                                // set positions for map
+                                positionLeft = (0..1500).random(),
+                                positionTop = (0..1500).random(),
+                                apiId = newPokemon.id
+                            )
+                            savePokemon(newPokemonObj)
+
+                            pokemonList.add(newPokemonObj)
+
+                        }
+                    } else {
+                        return Resource.Error("unable to retrieve next items")
+                    }
+                }
+                else -> return Resource.Error("unable to retrieve next items")
+            }
+        }
+
+        return Resource.Success(pokemonList)
+
+    }
+
     override suspend fun getPokemonSavedPokemon(): Resource<List<CustomPokemonListItem>> {
         val dbResult = pokeDao.getSavedPokemon()
-        if (dbResult.isNullOrEmpty()) {
-            return Resource.Error("saved pokemon list is empty")
+        return if (dbResult.isNullOrEmpty()) {
+            Resource.Error("saved pokemon list is empty")
         } else {
-            return Resource.Success(dbResult)
+            Resource.Success(dbResult)
         }
     }
 
-    // Single Source of Truth function
-    // retrieve pokemon from DB if empty retrieve pokemon from api
-    // if timestamp expired retrieve from api, insert results to db , updated timestamps and return items from db
+    private suspend fun getPokemonDetailFromApi(id: Int, dbResult: PokemonDetailItem?, ): Resource<PokemonDetailItem>{
+        try {
+            val apiResult = pokeApi.getPokemonDetail(id)
+            if (apiResult.isSuccessful) {
 
-    override suspend fun getPokemonDetail(id: String): Resource<PokemonDetailItem> {
+                if (apiResult.body() != null) {
+
+                    // add timestamp
+                    val newPokemon = apiResult.body()
+                    newPokemon!!.timestamp = System.currentTimeMillis().toString()
+
+                    // store results in DB
+                    pokeDao.insertPokemonDetailsItem(newPokemon)
+                    // retrieve results from DB
+
+                    val newDBRead = pokeDao.getPokemonDetails(id)
+
+                    // return from DB
+                    return Resource.Success(newDBRead!!)
+                } else if (dbResult != null) {
+                    // return expired object to let user know cache has expired and we cannot find new items from Api
+                    return Resource.Expired("Cache expired and cannot retrieve new Pokemon please check network connectivity ", dbResult)
+                }
+            } else {
+                return Resource.Error(apiResult.message())
+            }
+        } catch (e: Exception) {
+            return Resource.Error("error retrieving results")
+        }
+        return Resource.Error("error retrieving results")
+    }
+
+    // Single Source of Truth function
+    // retrieve pokemon from DB if empty ,retrieve pokemon from api
+    // if timestamp expired retrieve from api, insert results to db , updated timestamps and return items from db
+    override suspend fun getPokemonDetail(id: Int): Resource<PokemonDetailItem> {
         // first check DB for results
         val dbResult = pokeDao.getPokemonDetails(id)
 
         if (dbResult != null) {
-
             //if cache is older than 5 mins ago lets check the api for new results
-            if (dbResult.timestamp?.toLong()!! < fiveMinutesAgo) {
+            return if (dbResult.timestamp?.toLong()!! < fiveMinutesAgo) {
 
                 Log.d(TAG, "CACHE EXPIRED RETRIEVING NEW ITEM")
 
-                // could throw exception if no internet available
-
-                try {
-                    val apiResult = pokeApi.getPokemonDetail(id)
-                    if (apiResult.isSuccessful) {
-
-                        if (apiResult.body() != null) {
-
-                            // add timestamp
-                            val newPokemon = apiResult.body()
-                            newPokemon!!.timestamp = System.currentTimeMillis().toString()
-
-                            // store results in DB
-                            pokeDao.insertPokemonDetailsItem(newPokemon)
-                            // retrieve results from DB
-
-                            val newDBRead = pokeDao.getPokemonDetails(id)
-
-                            // return from DB
-
-                            return Resource.Success(newDBRead!!)
-                        } else {
-                            // return expired object to let user know cache has expired and we cannot find new items from Api
-                            return Resource.Expired("Cache expired and cannot retrieve new Pokemon please check network connectivity ", dbResult)
-                        }
-                    } else {
-                        return Resource.Error(apiResult.message())
-                    }
-                } catch (e: Exception) {
-                    return Resource.Error("error retrieving results")
-                }
-                // check if response is successful
-
-
+                getPokemonDetailFromApi(id, dbResult)
             } else {
-                // cache is sufficient let return it
-                Log.d(TAG, "CACHE IS SUFFICIENT RETURN ITEM FROM DB")
-                Log.d(TAG, "CACHED TIME : ${dbResult.timestamp} $fiveMinutesAgo")
-                return Resource.Success(dbResult)
+                // cache is sufficient lets return it
+                Resource.Success(dbResult)
             }
 
         } else {
             // DB is empty so lets check the api
-            // could throw exception if no internet available
-
-            try {
-                // check if response is successful
-                val apiResult = pokeApi.getPokemonDetail(id)
-                if (apiResult.isSuccessful) {
-
-                    if (apiResult.body() != null) {
-
-                        // add timestamp
-                        val newPokemon = apiResult.body()
-                        newPokemon!!.timestamp = System.currentTimeMillis().toString()
-
-                        // store results in DB
-                        pokeDao.insertPokemonDetailsItem(newPokemon)
-                        // retrieve results from DB
-
-                        val newDBRead = pokeDao.getPokemonDetails(id)
-
-                        // return from DB
-                        Log.d(TAG, "NO ITEM IN DB FOUND, ITEM HAS BEEN RETRIEVED FROM API")
-                        return Resource.Success(newDBRead!!)
-                    } else {
-                        return Resource.Error(apiResult.message())
-                    }
-                } else {
-                    return Resource.Error(apiResult.message())
-                }
-            } catch (e: Exception) {
-                return Resource.Error("error retrieving results")
-            }
-
-
+           return getPokemonDetailFromApi(id, null)
         }
 
 
     }
-
-
-    // WorkManager
 
     override suspend fun getLastStoredPokemon(): CustomPokemonListItem {
         return pokeDao.getLastStoredPokemonObject()
     }
 
+
+
     override suspend fun searchPokemonByName(name: String): Resource<List<CustomPokemonListItem>> {
         val dbResult = pokeDao.searchPokemonByName(name)
 
-        if (dbResult != null) {
+        return if (dbResult != null) {
             Log.d(TAG, dbResult.toString())
-            return Resource.Success(dbResult)
+            Resource.Success(dbResult)
 
         } else {
-            Log.d(TAG, dbResult.toString())
-            return Resource.Error("no pokemon found")
+            Resource.Error("no pokemon found")
         }
     }
 

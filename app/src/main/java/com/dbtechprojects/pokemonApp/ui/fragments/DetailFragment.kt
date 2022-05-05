@@ -228,7 +228,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     }
 
     private fun getPokemonDetails(id: Int?) {
-        viewModel.getPokemonDetails(id.toString())
+        if (id != null) {
+            viewModel.getPokemonDetails(id)
+        }
     }
 
 }
