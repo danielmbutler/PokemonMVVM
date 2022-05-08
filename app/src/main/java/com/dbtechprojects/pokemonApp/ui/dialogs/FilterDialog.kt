@@ -37,19 +37,16 @@ class FilterDialog(var fragmentlistener: TypePicker) : DialogFragment() {
 
 
         fireImg.setOnClickListener {
-            // pass type back to list fragment
             listener?.typeToSearch("fire")
             this.dismiss()
         }
 
         waterImg.setOnClickListener {
-            // pass type back to list fragment
             listener?.typeToSearch("water")
             this.dismiss()
         }
 
         grassImg.setOnClickListener {
-            // pass type back to list fragment
             listener?.typeToSearch("grass")
             this.dismiss()
         }

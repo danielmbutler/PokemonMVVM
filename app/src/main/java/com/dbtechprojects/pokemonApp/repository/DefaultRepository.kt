@@ -13,8 +13,6 @@ interface DefaultRepository {
     suspend fun getPokemonSavedPokemon(): Resource<List<CustomPokemonListItem>>
     suspend fun getPokemonDetail(id: Int): Resource<PokemonDetailItem>
     suspend fun getLastStoredPokemon(): CustomPokemonListItem
-    suspend fun searchPokemonByName(name: String): Resource<List<CustomPokemonListItem>>
-    suspend fun searchPokemonByType(type: String): Resource<List<CustomPokemonListItem>>
     suspend fun savePokemon(pokemonListItem: CustomPokemonListItem)
 
 }

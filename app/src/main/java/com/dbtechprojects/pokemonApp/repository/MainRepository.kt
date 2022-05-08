@@ -32,7 +32,33 @@ class MainRepository @Inject constructor(
             return Resource.Success(responseFromDB)
         } else {
             // if return null then preSeed from Constants
-            val preSeedList = Constants.preSeedDB()
+            val preSeedList = mutableListOf<CustomPokemonListItem>()
+            for (i in 1..10){
+                when (val apiResult = getPokemonDetail(i)) {
+                    is Resource.Success -> {
+
+                        if (apiResult.data != null) {
+                            apiResult.data.let { newPokemon ->
+                                // create custom pokemon object save in DB
+                                val newPokemonObj = CustomPokemonListItem(
+                                    name = newPokemon.name,
+                                    Image = newPokemon.sprites.front_default,
+                                    type = newPokemon.types?.get(0)?.type?.name.toString(),
+                                    // set positions for map
+                                    positionLeft = (0..1500).random(),
+                                    positionTop = (0..1500).random(),
+                                    apiId = newPokemon.id
+                                )
+                                preSeedList.add(newPokemonObj)
+
+                            }
+                        } else {
+                            return Resource.Error("unable to retrieve next items")
+                        }
+                    }
+                    else -> return Resource.Error("unable to retrieve next items")
+                }
+            }
 
             // insert into DB
             pokeDao.insertPokemonList(preSeedList)
@@ -47,6 +73,7 @@ class MainRepository @Inject constructor(
 
 
     }
+
 
     override suspend fun getPokemonListNextPage(): Resource<List<CustomPokemonListItem>> {
         // get id of last Pokemon in local DB
@@ -72,8 +99,6 @@ class MainRepository @Inject constructor(
                                 positionTop = (0..1500).random(),
                                 apiId = newPokemon.id
                             )
-                            savePokemon(newPokemonObj)
-
                             pokemonList.add(newPokemonObj)
 
                         }
@@ -83,6 +108,11 @@ class MainRepository @Inject constructor(
                 }
                 else -> return Resource.Error("unable to retrieve next items")
             }
+        }
+
+        // insert list into db
+        if (pokemonList.isNotEmpty()){
+            pokeDao.insertPokemonList(pokemonList)
         }
 
         return Resource.Success(pokemonList)
@@ -98,7 +128,7 @@ class MainRepository @Inject constructor(
         }
     }
 
-    private suspend fun getPokemonDetailFromApi(id: Int, dbResult: PokemonDetailItem?, ): Resource<PokemonDetailItem>{
+    private suspend fun getPokemonDetailFromApi(id: Int, dbResult: PokemonDetailItem? ): Resource<PokemonDetailItem>{
         try {
             val apiResult = pokeApi.getPokemonDetail(id)
             if (apiResult.isSuccessful) {
@@ -159,30 +189,6 @@ class MainRepository @Inject constructor(
 
     override suspend fun getLastStoredPokemon(): CustomPokemonListItem {
         return pokeDao.getLastStoredPokemonObject()
-    }
-
-
-
-    override suspend fun searchPokemonByName(name: String): Resource<List<CustomPokemonListItem>> {
-        val dbResult = pokeDao.searchPokemonByName(name)
-
-        return if (dbResult != null) {
-            Log.d(TAG, dbResult.toString())
-            Resource.Success(dbResult)
-
-        } else {
-            Resource.Error("no pokemon found")
-        }
-    }
-
-    override suspend fun searchPokemonByType(type: String): Resource<List<CustomPokemonListItem>> {
-        val dbResult = pokeDao.searchPokemonByType(type)
-
-        return if (dbResult != null) {
-            Resource.Success(dbResult)
-        } else {
-            Resource.Error("no pokemon found")
-        }
     }
 
     override suspend fun savePokemon(pokemonListItem: CustomPokemonListItem) {

@@ -26,9 +26,6 @@ private const val TAG = "MapViewFragment"
 class MapViewFragment : Fragment(R.layout.fragment_map) {
 
     lateinit var binding: FragmentMapBinding
-    val mainActivity: MainActivity by lazy {
-        requireActivity() as MainActivity
-    }
     private val viewModel: MapViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

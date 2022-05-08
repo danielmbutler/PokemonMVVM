@@ -2,12 +2,8 @@ package com.dbtechprojects.pokemonApp.ui.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dbtechprojects.pokemonApp.models.api_responses.PokemonDetailItem
-import com.dbtechprojects.pokemonApp.models.api_responses.PokemonListItem
-import com.dbtechprojects.pokemonApp.models.api_responses.PokemonResult
 import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
 import com.dbtechprojects.pokemonApp.repository.DefaultRepository
 import com.dbtechprojects.pokemonApp.util.Resource
@@ -25,6 +21,7 @@ class ListViewModel @Inject constructor(private val repository: DefaultRepositor
 
 
     init {
+        Log.d("oncreate", "oncreate viewmodel")
         getPokemonList()
     }
 
@@ -39,20 +36,6 @@ class ListViewModel @Inject constructor(private val repository: DefaultRepositor
     fun getNextPage(){
         viewModelScope.launch(Dispatchers.IO) {
             _pokemonList.postValue(repository.getPokemonListNextPage())
-        }
-    }
-
-    fun searchPokemonByName(name: String) {
-        _pokemonList.postValue(Resource.Loading("loading"))
-        viewModelScope.launch(Dispatchers.IO) {
-            _pokemonList.postValue(repository.searchPokemonByName(name))
-        }
-    }
-
-    fun searchPokemonByType(type: String) {
-        _pokemonList.postValue(Resource.Loading("loading"))
-        viewModelScope.launch(Dispatchers.IO) {
-            _pokemonList.postValue(repository.searchPokemonByType(type))
         }
     }
 }

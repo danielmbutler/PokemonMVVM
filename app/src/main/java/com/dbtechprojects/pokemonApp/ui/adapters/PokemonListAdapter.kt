@@ -2,9 +2,7 @@ package com.dbtechprojects.pokemonApp.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
-import com.dbtechprojects.pokemonApp.R
 import com.dbtechprojects.pokemonApp.databinding.ListRowItemBinding
 import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
 import com.dbtechprojects.pokemonApp.util.ImageUtils
@@ -20,9 +18,14 @@ class PokemonListAdapter() : RecyclerView.Adapter<PokemonListAdapter.PokemonView
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: CustomPokemonListItem, onClickListener: OnClickListener?) {
-            itemView.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.slidein_and_fade)
-            binding.rowCardTitle.text = item.name.capitalize(Locale.ROOT) // captilise name
-            binding.rowCardType.text = "Type: ${item.type?.capitalize(Locale.ROOT)}"
+            binding.rowCardTitle.text =
+                item.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } // captilise name
+
+            binding.rowCardType.text = "Type: ${item.type.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.ROOT
+                ) else it.toString()
+            }}"
             // setting click listener to be overridden in ListFragment
             binding.cardView.setOnClickListener {
                 onClickListener?.onClick(item)
@@ -62,8 +65,13 @@ class PokemonListAdapter() : RecyclerView.Adapter<PokemonListAdapter.PokemonView
         this.onClickListener = onClickListener
     }
 
-    fun setList(list: List<CustomPokemonListItem>) {
+    fun updateList(list: List<CustomPokemonListItem>) {
+        pokemonList.addAll(list)
+    }
+
+    fun setList(list: List<CustomPokemonListItem>){
         pokemonList = list as MutableList<CustomPokemonListItem>
+        notifyDataSetChanged()
     }
 
 

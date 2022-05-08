@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dbtechprojects.pokemonApp.R
 import com.dbtechprojects.pokemonApp.databinding.FragmentListBinding
 import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
-import com.dbtechprojects.pokemonApp.ui.activities.MainActivity
 import com.dbtechprojects.pokemonApp.ui.adapters.PokemonListAdapter
 import com.dbtechprojects.pokemonApp.ui.dialogs.FilterDialog
 import com.dbtechprojects.pokemonApp.ui.viewmodels.ListViewModel
@@ -26,12 +25,10 @@ private const val TAG = "ListFragment"
 @AndroidEntryPoint
 class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
     lateinit var binding: FragmentListBinding
-    val mainActivity: MainActivity by lazy {
-        requireActivity() as MainActivity
-    }
     private val viewModel: ListViewModel by viewModels()
     private lateinit var pokemonListAdapter: PokemonListAdapter
     private var pokemonList = mutableListOf<CustomPokemonListItem>()
+    private var shouldPaginate = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentListBinding.bind(view)
@@ -65,6 +62,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
     private fun setupSearchView() {
         binding.listFragmentSearchView.setOnClickListener {
             if (binding.listFragmentSearchView.query.isEmpty()) {
+                pokemonListAdapter.setList(mutableListOf())
                 viewModel.getPokemonList()
             }
 
@@ -73,8 +71,9 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
-                    viewModel.searchPokemonByName(query)
+                    pokemonListAdapter.setList(filterListByName(query))
                 } else {
+                    pokemonListAdapter.setList(mutableListOf())
                     viewModel.getPokemonList()
                 }
                 return false
@@ -84,8 +83,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
                 if (newText != null) {
                     // search DB after two letters are typed
                     if (newText.length > 2) {
-                        Log.d(TAG, newText)
-                        viewModel.searchPokemonByName(newText)
+                        pokemonListAdapter.setList(filterListByName(newText))
                     }
                 }
                 return false
@@ -94,11 +92,15 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getPokemonList()
+    }
+
     private fun setupRv() {
         pokemonListAdapter = PokemonListAdapter()
 
         // setup on click for RecyclerView Items
-
         pokemonListAdapter.setOnClickListener(object : PokemonListAdapter.OnClickListener {
             override fun onClick(item: CustomPokemonListItem) {
                 // create bundle to pass to next fragment
@@ -114,7 +116,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
-                    if (!recyclerView.canScrollVertically(1)) {
+                    if (!recyclerView.canScrollVertically(1) && binding.listFragmentSearchView.query.isEmpty()) {
                         // recyclerview has reached the bottom so we can now retrieve the next feed items
                         binding.listFragmentPaginateProgress.visibility = View.VISIBLE
                         viewModel.getNextPage()
@@ -137,15 +139,14 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
     // intialise Observers for liveData objects in ViewModel
     private fun initObservers() {
         viewModel.pokemonList.observe(viewLifecycleOwner, Observer { list ->
+            Log.d("list", "list : $list")
             when (list) {
                 is Resource.Success -> {
                     Log.d(TAG, list.data.toString())
                     if (list.data != null) {
                         if (list.data.isNotEmpty()) {
-                            Log.d(TAG, list.data.toString())
                             pokemonList = list.data as ArrayList<CustomPokemonListItem>
-                            pokemonListAdapter.setList(list.data)
-                            binding.listFragmentRv.invalidate()
+                            pokemonListAdapter.updateList(list.data)
                             pokemonListAdapter.notifyDataSetChanged()
                             showProgressbar(false)
 
@@ -189,9 +190,20 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
     }
 
     // get type chosen by user in dialog
-
     override fun typeToSearch(type: String) {
-        Log.d(TAG, type)
-        viewModel.searchPokemonByType(type)
+        shouldPaginate = false
+        pokemonListAdapter.setList(filterListByType(type))
     }
+
+    private fun filterListByType(type: String): List<CustomPokemonListItem> {
+
+        return pokemonList.filter { it.type == type }
+    }
+
+    private fun filterListByName(name: String): List<CustomPokemonListItem> {
+
+        return pokemonList.filter { it.name.contains(name) }
+    }
+
+
 }

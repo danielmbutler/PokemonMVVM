@@ -26,9 +26,6 @@ private const val TAG = "DetailFragment"
 @AndroidEntryPoint
 class DetailFragment : Fragment(R.layout.fragment_detail) {
     lateinit var binding: FragmentDetailBinding
-    val mainActivity: MainActivity by lazy {
-        requireActivity() as MainActivity
-    }
     private val viewModel: DetailViewModel by viewModels()
     lateinit var mPokemon: CustomPokemonListItem
 
@@ -40,10 +37,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         arguments?.let {
             it.getParcelable<CustomPokemonListItem>("pokemon")?.let { pokemon ->
                 mPokemon = pokemon
-                Log.d(TAG, pokemon.name)
-                Log.d(TAG, pokemon.type.toString())
                 pokemon.type?.let { it1 -> setType(it1) }
-                Log.d(TAG, pokemon.id.toString())
                 // setup name
                 binding.detailFragmentTitleName.text = pokemon.name.capitalize()
                 // query api for pokemon details
@@ -79,15 +73,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             when (pokemondetails) {
                 is Resource.Success -> {
                     pokemondetails.data?.let { pokemon ->
-                        Log.d(TAG, pokemon.toString())
-                        Log.d(TAG, pokemon.name.toString())
-                        Log.d(TAG, pokemon.sprites.toString())
-                        Log.d(TAG, pokemon.abilities.toString())
-                        Log.d(TAG, pokemon.stat.toString())
-                        Log.d(TAG, pokemon.types.toString())
-
                         setupView(pokemon)
-
                     }
                 }
                 is Resource.Error -> {
@@ -125,6 +111,15 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         })
     }
 
+    private fun addStarToContainer(dp: Int){
+        val img = ImageView(requireContext())
+        val lp = LinearLayout.LayoutParams(dp, dp) //make the image same size as first star
+        img.layoutParams = lp
+        ImageUtils.loadImageDrawable(requireContext(), img, R.drawable.star)
+
+        binding.detailFragmentStarContainer.addView(img)
+    }
+
     //Setup Pokemon card info
     private fun setupView(pokemon: PokemonDetailItem) {
         // load image
@@ -150,8 +145,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
 
         val pokemonstats = mutableListOf<Int>()
-
-
         // load stats
 
         for (i in pokemon.stat) {
@@ -174,44 +167,22 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
 
         // setup stars
-        //if average of pokemon stats is less than 60 leave at one star if more than 60 but less than 80 then show 2 stars,more than 80 3 stars
+        //if average of pokemon stats is less than 60 leave at one star
+        // if more than 60 but less than 80 then show 2 stars,
+        // more than 80 3 stars
         val pokemonAverage = pokemonstats.sum() / 6
-
-        Log.d(TAG, "pokemon aveage is $pokemonAverage")
 
         // get dp value by checking screenSize
         val dp = (40 * (context?.resources?.displayMetrics?.density!!)).toInt()
+         addStarToContainer(dp)
 
-        if (pokemonAverage in 61..79) {
+        if (pokemonAverage > 60) {
             // add 1 star
-
-
-            Log.d(TAG, "adding 1 star pokemon aveage is $pokemonAverage")
-            val img = ImageView(requireContext())
-            val lp = LinearLayout.LayoutParams(dp, dp) //make the image same size as first star
-            img.layoutParams = lp
-            ImageUtils.loadImageDrawable(requireContext(), img, R.drawable.star)
-
-            binding.detailFragmentStarContainer.addView(img)
-
+            addStarToContainer(dp)
         }
-
         if (pokemonAverage > 79) {
-            // add 2 stars
-
-
-            Log.d(TAG, "adding 1 star pokemon aveage is $pokemonAverage")
-            val img = ImageView(requireContext())
-            val img2 = ImageView(requireContext())
-            val lp = LinearLayout.LayoutParams(dp, dp) //make the image same size as first star
-            img.layoutParams = lp
-            img2.layoutParams = lp
-            ImageUtils.loadImageDrawable(requireContext(), img, R.drawable.star)
-            ImageUtils.loadImageDrawable(requireContext(), img2, R.drawable.star)
-
-            binding.detailFragmentStarContainer.addView(img)
-            binding.detailFragmentStarContainer.addView(img2)
-
+            // add 1 star
+            addStarToContainer(dp)
         }
 
         // setup last location plot on map

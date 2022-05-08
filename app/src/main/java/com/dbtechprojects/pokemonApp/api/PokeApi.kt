@@ -9,11 +9,6 @@ import retrofit2.http.Path
 // API Interface class to retrieve Pokemon Items and Pokemon Details
 
 interface PokeApi {
-
-    @GET("api/v2/pokemon")
-    suspend fun getPokemonList(): Response<PokemonListItem>
-
-
     @GET("/api/v2/pokemon/{id}")
     suspend fun getPokemonDetail(
         @Path("id") id: Int,

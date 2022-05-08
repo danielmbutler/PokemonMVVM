@@ -75,11 +75,11 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <ImageView
-                android:id="@+id/detailFragment_star"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                app:srcCompat="@drawable/star" />
+<!--            <ImageView-->
+<!--                android:id="@+id/detailFragment_star"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="40dp"-->
+<!--                app:srcCompat="@drawable/star" />-->
 
 
         </LinearLayout>

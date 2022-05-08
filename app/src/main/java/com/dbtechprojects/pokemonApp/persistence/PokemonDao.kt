@@ -37,14 +37,11 @@ interface PokemonDao {
 
 
     // pokemonDetails table functions
-
     @Query("SELECT * FROM pokemonDetails WHERE id Like :id")
     suspend fun getPokemonDetails(id: Int): PokemonDetailItem?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPokemonDetailsItem(pokemonDetailItem: PokemonDetailItem)
-
-    // WorkManger Functions
 
     @Query("SELECT * FROM pokemon ORDER BY id DESC LIMIT 1")
     fun getLastStoredPokemonObject(): CustomPokemonListItem

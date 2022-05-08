@@ -3,8 +3,6 @@ package com.dbtechprojects.pokemonApp.models.api_responses
 import com.google.gson.annotations.SerializedName
 
 // data class for PokemonListItem
-
-
 data class PokemonListItem(
     @SerializedName("count")
     val count: Int,
@@ -13,7 +11,7 @@ data class PokemonListItem(
     val next: String,
 
     @SerializedName("previous")
-    val previous: Any,
+    val previous: String,
 
     @SerializedName("results")
     val results: List<PokemonResult>
