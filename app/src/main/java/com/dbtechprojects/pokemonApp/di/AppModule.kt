@@ -17,7 +17,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 //Hilt Module Class for providing dependencies to be used in repository, viewmodels and workmanager
-
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {

@@ -3,8 +3,6 @@ package com.dbtechprojects.pokemonApp.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.dbtechprojects.pokemonApp.R
-import com.dbtechprojects.pokemonApp.databinding.ListRowItemBinding
 import com.dbtechprojects.pokemonApp.databinding.ListSavedRowItemBinding
 import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
 import com.dbtechprojects.pokemonApp.util.ImageUtils
