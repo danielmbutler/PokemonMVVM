@@ -81,10 +81,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
-                    // search DB after two letters are typed
-                    if (newText.length > 2) {
-                        pokemonListAdapter.setList(filterListByName(newText))
-                    }
+                    pokemonListAdapter.setList(filterListByName(newText))
                 }
                 return false
             }
