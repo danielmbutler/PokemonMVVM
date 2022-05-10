@@ -20,7 +20,6 @@
     </style>
 
     <!-- Custom SearchBar theme for List Fragment -->
-
     <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
         <!-- Gets rid of the search icon -->
         <item name="searchIcon">@drawable/ic_baseline_search_24</item>
@@ -35,7 +34,6 @@
     </style>
 
     <!-- Custom splash theme -->
-
     <style name="splashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash</item>
         <item name="android:statusBarColor">@color/pokemon_yellow</item>

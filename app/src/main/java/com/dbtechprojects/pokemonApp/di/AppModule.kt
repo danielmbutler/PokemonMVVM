@@ -39,5 +39,4 @@ object AppModule {
     @Provides
     fun provideMainRepository(api: PokeApi, dao: PokemonDao): DefaultRepository = MainRepository(api, dao)
 
-
 }
