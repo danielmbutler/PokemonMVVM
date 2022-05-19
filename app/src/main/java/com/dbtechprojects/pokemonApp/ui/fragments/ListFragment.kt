@@ -89,10 +89,6 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getPokemonList()
-    }
 
     private fun setupRv() {
         pokemonListAdapter = PokemonListAdapter()

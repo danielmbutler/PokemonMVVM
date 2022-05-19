@@ -13,8 +13,6 @@ import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
 interface PokemonDao {
 
     //pokemon table functions
-
-
     // searches Db and returns result if a name contains the string provided from the user
     @Query("SELECT * FROM pokemon WHERE name LIKE '%' || :name || '%'")
     suspend fun searchPokemonByName(name: String): List<CustomPokemonListItem>?
