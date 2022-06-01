@@ -10,6 +10,9 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.NavArgs
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navArgument
 import com.dbtechprojects.pokemonApp.R
 import com.dbtechprojects.pokemonApp.databinding.FragmentDetailBinding
 import com.dbtechprojects.pokemonApp.models.api_responses.PokemonDetailItem
@@ -28,23 +31,22 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     lateinit var binding: FragmentDetailBinding
     private val viewModel: DetailViewModel by viewModels()
     lateinit var mPokemon: CustomPokemonListItem
+    private val navigationArgs : DetailFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDetailBinding.bind(view)
 
         // checking for details passed from list fragment
-        arguments?.let {
-            it.getParcelable<CustomPokemonListItem>("pokemon")?.let { pokemon ->
-                mPokemon = pokemon
-                pokemon.type?.let { it1 -> setType(it1) }
-                // setup name
-                binding.detailFragmentTitleName.text = pokemon.name.capitalize()
-                // query api for pokemon details
-                getPokemonDetails(pokemon.apiId)
-                subscribeObservers()
-            }
-        }
+        mPokemon = navigationArgs.pokemon
+        mPokemon.type?.let { it1 -> setType(it1) }
+        // setup name
+        binding.detailFragmentTitleName.text = mPokemon.name.capitalize()
+        // query api for pokemon details
+        getPokemonDetails(mPokemon.apiId)
+        subscribeObservers()
+
+
 
         // setup saveButton clickListener if pokemon is not saved
 

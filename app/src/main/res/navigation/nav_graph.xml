@@ -22,7 +22,11 @@
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.dbtechprojects.pokemonApp.ui.fragments.DetailFragment"
-        android:label="DetailFragment" />
+        android:label="DetailFragment" >
+        <argument
+            android:name="pokemon"
+            app:argType="com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem" />
+    </fragment>
     <fragment
         android:id="@+id/savedViewFragment"
         android:name="com.dbtechprojects.pokemonApp.ui.fragments.SavedViewFragment"

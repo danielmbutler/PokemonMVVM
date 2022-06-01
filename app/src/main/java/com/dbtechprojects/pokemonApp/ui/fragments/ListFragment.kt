@@ -96,10 +96,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
         // setup on click for RecyclerView Items
         pokemonListAdapter.setOnClickListener(object : PokemonListAdapter.OnClickListener {
             override fun onClick(item: CustomPokemonListItem) {
-                // create bundle to pass to next fragment
-                val bundle = Bundle()
-                bundle.putParcelable("pokemon", item)
-                findNavController().navigate(R.id.action_listFragment_to_detailFragment, bundle)
+                findNavController().navigate(ListFragmentDirections.actionListFragmentToDetailFragment(item))
             }
 
         })
