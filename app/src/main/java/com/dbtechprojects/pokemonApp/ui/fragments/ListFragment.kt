@@ -1,10 +1,15 @@
 package com.dbtechprojects.pokemonApp.ui.fragments
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.ViewUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dbtechprojects.pokemonApp.R
 import com.dbtechprojects.pokemonApp.databinding.FragmentListBinding
 import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
+import com.dbtechprojects.pokemonApp.ui.activities.CounterActivity
 import com.dbtechprojects.pokemonApp.ui.adapters.PokemonListAdapter
 import com.dbtechprojects.pokemonApp.ui.dialogs.FilterDialog
 import com.dbtechprojects.pokemonApp.ui.viewmodels.ListViewModel
@@ -40,12 +46,24 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
 
     }
 
+    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            intent?.getIntExtra("count", 0).let { count ->
+                Toast.makeText(requireContext(), "The count is $count", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun setupFabButtons() {
         binding.listFragmentMapFAB.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_mapViewFragment)
         }
+
+
         binding.listFragmentSavedFAB.setOnClickListener {
-            findNavController().navigate(R.id.action_listFragment_to_savedViewFragment)
+//            findNavController().navigate(R.id.action_listFragment_to_savedViewFragment)
+            startForResult.launch(Intent(requireContext(), CounterActivity::class.java))
         }
     }
 

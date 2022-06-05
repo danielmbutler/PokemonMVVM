@@ -15,7 +15,11 @@
         android:roundIcon="@drawable/pokeball"
         android:supportsRtl="true"
         android:theme="@style/splashTheme">
-        <activity android:name=".ui.activities.MainActivity"
+        <activity
+            android:name=".ui.activities.CounterActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,8 +28,5 @@
             </intent-filter>
         </activity>
     </application>
-
-
-
 
 </manifest>

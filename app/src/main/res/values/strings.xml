@@ -3,4 +3,7 @@
     <string name="name">name</string>
     <string name="search_pokemon_by_type">Search Pokemon By Type</string>
     <string name="cancel">Cancel</string>
+    <string name="_0">0</string>
+    <string name="increase_count">Increase count</string>
+    <string name="save_count">save count</string>
 </resources>
