@@ -2,6 +2,7 @@ package com.dbtechprojects.pokemonApp.ui.fragments
 
 import android.app.Activity
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -35,6 +36,7 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
     private lateinit var pokemonListAdapter: PokemonListAdapter
     private var pokemonList = mutableListOf<CustomPokemonListItem>()
     private var shouldPaginate = true
+    private lateinit var mediaPlayer: MediaPlayer
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentListBinding.bind(view)
@@ -63,7 +65,17 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
 
         binding.listFragmentSavedFAB.setOnClickListener {
 //            findNavController().navigate(R.id.action_listFragment_to_savedViewFragment)
-            startForResult.launch(Intent(requireContext(), CounterActivity::class.java))
+         //  startForResult.launch(Intent(requireContext(), CounterActivity::class.java))
+            if (!this::mediaPlayer.isInitialized){
+                mediaPlayer = MediaPlayer.create(requireContext(), R.raw.sample_audio_file)
+            }
+            if (mediaPlayer.isPlaying){
+                mediaPlayer.pause()
+                mediaPlayer.seekTo(0)
+                return@setOnClickListener
+            }
+
+            mediaPlayer.start()
         }
     }
 
@@ -214,4 +226,11 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
     }
 
 
+    override fun onDestroy() {
+        if (this::mediaPlayer.isInitialized){
+            mediaPlayer.stop()
+            mediaPlayer.release()
+        }
+        super.onDestroy()
+    }
 }
