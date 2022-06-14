@@ -12,12 +12,13 @@ class PokemonListAdapter() : RecyclerView.Adapter<PokemonListAdapter.PokemonView
 
     private var onClickListener: OnClickListener? = null
     private var pokemonList = mutableListOf<CustomPokemonListItem>()
+    private var checkedPokemonList = mutableListOf<CustomPokemonListItem>()
 
 
     class PokemonViewHolder(private val binding: ListRowItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: CustomPokemonListItem, onClickListener: OnClickListener?) {
+        fun bind(item: CustomPokemonListItem, onClickListener: OnClickListener?, onCheckedListener: CheckedListener) {
             binding.rowCardTitle.text =
                 item.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } // captilise name
 
@@ -33,6 +34,11 @@ class PokemonListAdapter() : RecyclerView.Adapter<PokemonListAdapter.PokemonView
 
             //setup image
             item.Image?.let { ImageUtils.loadImage(itemView.context, binding.rowCardImage, it) }
+
+            // setup checkbox
+            binding.checkBox.setOnCheckedChangeListener { compoundButton, isChecked ->
+               onCheckedListener.listUpdate(item, isChecked)
+            }
 
         }
 
@@ -52,7 +58,7 @@ class PokemonListAdapter() : RecyclerView.Adapter<PokemonListAdapter.PokemonView
     }
 
     override fun onBindViewHolder(holder: PokemonViewHolder, position: Int) {
-        holder.bind(pokemonList[position], onClickListener)
+        holder.bind(pokemonList[position], onClickListener, checkedListener)
     }
 
     override fun getItemCount(): Int = pokemonList.size
@@ -73,6 +79,27 @@ class PokemonListAdapter() : RecyclerView.Adapter<PokemonListAdapter.PokemonView
         pokemonList = list as MutableList<CustomPokemonListItem>
         notifyDataSetChanged()
     }
+
+    fun getCheckedPokemonCount() : Int {
+       return checkedPokemonList.size
+    }
+
+    interface CheckedListener {
+        fun listUpdate(item: CustomPokemonListItem, isChecked : Boolean)
+    }
+
+    val checkedListener = object : CheckedListener{
+        override fun listUpdate(item: CustomPokemonListItem, isChecked: Boolean) {
+            if (!checkedPokemonList.contains(item) && isChecked){
+                checkedPokemonList.add(item)
+                return
+            }
+
+            checkedPokemonList.remove(item)
+        }
+
+    }
+
 
 
 }

@@ -65,17 +65,10 @@ class ListFragment : Fragment(R.layout.fragment_list), FilterDialog.TypePicker {
 
         binding.listFragmentSavedFAB.setOnClickListener {
 //            findNavController().navigate(R.id.action_listFragment_to_savedViewFragment)
-         //  startForResult.launch(Intent(requireContext(), CounterActivity::class.java))
-            if (!this::mediaPlayer.isInitialized){
-                mediaPlayer = MediaPlayer.create(requireContext(), R.raw.sample_audio_file)
-            }
-            if (mediaPlayer.isPlaying){
-                mediaPlayer.pause()
-                mediaPlayer.seekTo(0)
-                return@setOnClickListener
-            }
+         pokemonListAdapter.getCheckedPokemonCount().let { count ->
+             Toast.makeText(requireContext(), "$count pokemon have been checked", Toast.LENGTH_SHORT).show()
+         }
 
-            mediaPlayer.start()
         }
     }
 
