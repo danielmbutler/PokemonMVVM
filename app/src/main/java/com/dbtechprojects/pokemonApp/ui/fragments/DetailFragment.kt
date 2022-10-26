@@ -91,11 +91,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                     }
                 }
                 is Resource.Error -> {
-                    Log.d(TAG, pokemondetails.message.toString())
                     Toast.makeText(requireContext(), "Error retrieving results please check internet connection", Toast.LENGTH_LONG).show()
                 }
                 is Resource.Loading -> {
-                    Log.d(TAG, pokemondetails.message.toString())
                 }
                 is Resource.Expired -> {
                     pokemondetails.data?.let { pokemon ->
@@ -177,7 +175,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         //if average of pokemon stats is less than 60 leave at one star if more than 60 but less than 80 then show 2 stars,more than 80 3 stars
         val pokemonAverage = pokemonstats.sum() / 6
 
-        Log.d(TAG, "pokemon aveage is $pokemonAverage")
 
         // get dp value by checking screenSize
         val dp = (40 * (context?.resources?.displayMetrics?.density!!)).toInt()
@@ -186,7 +183,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             // add 1 star
 
 
-            Log.d(TAG, "adding 1 star pokemon aveage is $pokemonAverage")
             val img = ImageView(requireContext())
             val lp = LinearLayout.LayoutParams(dp, dp) //make the image same size as first star
             img.layoutParams = lp
@@ -200,7 +196,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             // add 2 stars
 
 
-            Log.d(TAG, "adding 1 star pokemon aveage is $pokemonAverage")
             val img = ImageView(requireContext())
             val img2 = ImageView(requireContext())
             val lp = LinearLayout.LayoutParams(dp, dp) //make the image same size as first star

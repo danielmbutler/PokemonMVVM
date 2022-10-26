@@ -11,14 +11,14 @@ import retrofit2.http.Path
 interface PokeApi {
 
     @GET("api/v2/pokemon")
-    suspend fun getPokemonList(): Response<PokemonListItem>
+    suspend fun getPokemonList(): PokemonListItem?
 
 
     @GET("/api/v2/pokemon/{id}")
     suspend fun getPokemonDetail(
         @Path("id") id: String,
 
-        ): Response<PokemonDetailItem>
+        ): PokemonDetailItem?
 
 }
 

@@ -21,15 +21,12 @@ class PokemonListAdapter() : RecyclerView.Adapter<PokemonListAdapter.PokemonView
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: CustomPokemonListItem, onClickListener: OnClickListener?) {
-            Log.d("RecyclerViewAdapter", item.name)
             itemView.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.slidein_and_fade)
             binding.rowCardTitle.text = item.name.capitalize(Locale.ROOT) // captilise name
             binding.rowCardType.text = "Type: ${item.type?.capitalize(Locale.ROOT)}"
 
 
             // setting click listener to be overridden in ListFragment
-
-            Log.d("RecyclerViewAdapter", item.name)
             binding.cardView.setOnClickListener {
                 onClickListener?.onClick(item)
             }

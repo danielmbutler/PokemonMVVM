@@ -38,7 +38,6 @@ class MainRepository @Inject constructor(
             pokeDao.insertPokemonList(preSeedList)
 
             // read from DB
-
             val initialDBRead = pokeDao.getPokemon()
 
             // return from DB
@@ -77,29 +76,23 @@ class MainRepository @Inject constructor(
 
                 try {
                     val apiResult = pokeApi.getPokemonDetail(id)
-                    if (apiResult.isSuccessful) {
+                    if (apiResult != null) {
 
-                        if (apiResult.body() != null) {
+                        // add timestamp
+                        apiResult.timestamp = System.currentTimeMillis().toString()
 
-                            // add timestamp
-                            val newPokemon = apiResult.body()
-                            newPokemon!!.timestamp = System.currentTimeMillis().toString()
+                        // store results in DB
+                        pokeDao.insertPokemonDetailsItem(apiResult)
+                        // retrieve results from DB
 
-                            // store results in DB
-                            pokeDao.insertPokemonDetailsItem(newPokemon)
-                            // retrieve results from DB
+                        val newDBRead = pokeDao.getPokemonDetails(id)
 
-                            val newDBRead = pokeDao.getPokemonDetails(id)
+                        // return from DB
 
-                            // return from DB
+                        return Resource.Success(newDBRead!!)
 
-                            return Resource.Success(newDBRead!!)
-                        } else {
-                            // return expired object to let user know cache has expired and we cannot find new items from Api
-                            return Resource.Expired("Cache expired and cannot retrieve new Pokemon please check network connectivity ", dbResult)
-                        }
                     } else {
-                        return Resource.Error(apiResult.message())
+                        return Resource.Error("error retrieving results")
                     }
                 } catch (e: Exception) {
                     return Resource.Error("error retrieving results")
@@ -121,28 +114,22 @@ class MainRepository @Inject constructor(
             try {
                 // check if response is successful
                 val apiResult = pokeApi.getPokemonDetail(id)
-                if (apiResult.isSuccessful) {
+                if (apiResult != null) {
 
-                    if (apiResult.body() != null) {
+                    // add timestamp
+                    apiResult.timestamp = System.currentTimeMillis().toString()
 
-                        // add timestamp
-                        val newPokemon = apiResult.body()
-                        newPokemon!!.timestamp = System.currentTimeMillis().toString()
+                    // store results in DB
+                    pokeDao.insertPokemonDetailsItem(apiResult)
+                    // retrieve results from DB
 
-                        // store results in DB
-                        pokeDao.insertPokemonDetailsItem(newPokemon)
-                        // retrieve results from DB
+                    val newDBRead = pokeDao.getPokemonDetails(id)
 
-                        val newDBRead = pokeDao.getPokemonDetails(id)
-
-                        // return from DB
-                        Log.d(TAG, "NO ITEM IN DB FOUND, ITEM HAS BEEN RETRIEVED FROM API")
-                        return Resource.Success(newDBRead!!)
-                    } else {
-                        return Resource.Error(apiResult.message())
-                    }
+                    // return from DB
+                    Log.d(TAG, "NO ITEM IN DB FOUND, ITEM HAS BEEN RETRIEVED FROM API")
+                    return Resource.Success(newDBRead!!)
                 } else {
-                    return Resource.Error(apiResult.message())
+                    return Resource.Error("error retrieving results")
                 }
             } catch (e: Exception) {
                 return Resource.Error("error retrieving results")
