@@ -1,6 +1,7 @@
 package com.dbtechprojects.pokemonApp.database
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -11,6 +12,7 @@ import com.dbtechprojects.pokemonApp.models.api_responses.Sprites
 import com.dbtechprojects.pokemonApp.models.customModels.CustomPokemonListItem
 import com.dbtechprojects.pokemonApp.persistence.PokemonDao
 import com.dbtechprojects.pokemonApp.persistence.PokemonDatabase
+import com.dbtechprojects.pokemonApp.util.Constants
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -73,5 +75,56 @@ class RoomDatabaseTest : TestCase() {
         val roomItemRetrieve = roomDAO.getPokemonDetails("1")
         assertEquals(roomItemRetrieve != null, true)
     }
+
+
+    @Test
+    fun preSeedTest() = runBlocking{
+
+        val list = Constants.preSeedDB()
+
+        roomDAO.insertPokemonList(list)
+
+        val roomItemRetrieve = roomDAO.getPokemon()
+
+        assertEquals(roomItemRetrieve.first().apiId == list.first().apiId, true)
+    }
+
+    @Test
+    fun searchNameTest() = runBlocking{
+
+        val list = Constants.preSeedDB()
+
+        roomDAO.insertPokemonList(list)
+
+        val search = roomDAO.searchPokemonByName("butterfree")
+
+        assertEquals(search!!.any { it.name == "butterfree" }, true)
+    }
+
+    @Test
+    fun searchTypeTest() = runBlocking{
+
+        val list = Constants.preSeedDB()
+
+        roomDAO.insertPokemonList(list)
+
+        val search = roomDAO.searchPokemonByType("bug")
+
+        assertEquals(search!!.any { it.type == "bug" }, true)
+    }
+
+
+    @Test
+    fun lastStoredObjectTest(){
+        val list = Constants.preSeedDB()
+        val last = list.last()
+
+        roomDAO.insertPokemonList(list)
+        val pokemonInDB = roomDAO.getPokemon()
+
+        assertEquals(pokemonInDB.last().apiId == last.apiId, true)
+    }
+
+
 
 }

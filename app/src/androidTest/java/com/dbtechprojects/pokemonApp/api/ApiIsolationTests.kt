@@ -1,7 +1,6 @@
 package com.dbtechprojects.pokemonApp.api
 
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.dbtechprojects.pokemonApp.api.FakeApiImplementation
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -11,7 +10,7 @@ import org.junit.runner.RunWith
 class ApiIsolationTests : TestCase() {
 
     @Test
-    fun test_pokemon_Api_Result_Not_Empty(){
+    fun test_pokemon_Api_Detail_Result_Success(){
         val api = FakeApiImplementation.provideApi()
         val test = runBlocking {
             api.getPokemonDetail("1")
@@ -21,7 +20,7 @@ class ApiIsolationTests : TestCase() {
     }
 
     @Test
-    fun test_Game_Store_Api_Result_Not_Empty(){
+    fun  test_pokemon_Api_List_Result_Success(){
         val api = FakeApiImplementation.provideApi()
         val test = runBlocking {
             api.getPokemonList()
@@ -29,4 +28,6 @@ class ApiIsolationTests : TestCase() {
 
         assertEquals(test.isSuccessful, true)
     }
+
+    // not empty tests
 }

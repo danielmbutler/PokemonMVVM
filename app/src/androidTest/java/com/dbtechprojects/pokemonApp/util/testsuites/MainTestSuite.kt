@@ -10,6 +10,7 @@ import org.junit.runners.Suite
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
     ApiIsolationTests::class,
-    RoomDatabaseTest::class
+    RoomDatabaseTest::class,
+    UtilityMethodsTest::class
 )
-class DataIsolationTests
+class MainTestSuite
