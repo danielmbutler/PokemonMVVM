@@ -28,6 +28,13 @@ class UtilityMethodsTest : TestCase() {
 
 
     //test random range
-
+    @Test
+    fun randomRangeTest(){
+        val randomInts = mutableListOf<Int>()
+        for (i in 0..200){
+            randomInts.add((0..600).random())
+        }
+        assertEquals(randomInts.filter { (0..600).contains(it) }.size == randomInts.size, true)
+    }
 
 }

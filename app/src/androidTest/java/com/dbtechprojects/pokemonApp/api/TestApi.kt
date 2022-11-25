@@ -7,7 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 
-interface FakeApi {
+interface TestApi {
     @GET("api/v2/pokemon")
     suspend fun getPokemonList(): Response<PokemonListItem>
 

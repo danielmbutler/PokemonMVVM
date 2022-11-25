@@ -11,7 +11,7 @@ class ApiIsolationTests : TestCase() {
 
     @Test
     fun test_pokemon_Api_Detail_Result_Success(){
-        val api = FakeApiImplementation.provideApi()
+        val api = TestApiImplementation.provideApi()
         val test = runBlocking {
             api.getPokemonDetail("1")
         }
@@ -21,7 +21,7 @@ class ApiIsolationTests : TestCase() {
 
     @Test
     fun  test_pokemon_Api_List_Result_Success(){
-        val api = FakeApiImplementation.provideApi()
+        val api = TestApiImplementation.provideApi()
         val test = runBlocking {
             api.getPokemonList()
         }
@@ -29,5 +29,24 @@ class ApiIsolationTests : TestCase() {
         assertEquals(test.isSuccessful, true)
     }
 
-    // not empty tests
+    @Test
+    fun  test_pokemon_Api_List_Result_NotEmpty(){
+        val api = TestApiImplementation.provideApi()
+        val test = runBlocking {
+            api.getPokemonList()
+        }
+
+        assertEquals(test.body()?.results?.isNotEmpty(), true)
+    }
+
+
+    @Test
+    fun test_pokemon_Api_Detail_Result_Not_Null(){
+        val api = TestApiImplementation.provideApi()
+        val test = runBlocking {
+            api.getPokemonDetail("1")
+        }
+
+        assertEquals(test.body() != null, true)
+    }
 }
