@@ -15,6 +15,6 @@ import org.junit.runners.Suite
     RoomDatabaseTest::class,
     UtilityMethodsTest::class,
     // UI Tests
-MainActivityTest::class
+    MainActivityTest::class
 )
 class MainTestSuite

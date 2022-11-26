@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pokemon_dark_red"
-    android:padding="16dp"
     android:scrollbars="none">
 
     <RelativeLayout
@@ -14,6 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_corner_card"
         android:orientation="vertical"
+        android:layout_margin="16dp"
         android:padding="16dp">
 
 
